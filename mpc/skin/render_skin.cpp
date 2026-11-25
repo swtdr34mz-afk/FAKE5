@@ -2,16 +2,16 @@
  * Copyright (C) 2026 swtdr34mz (FAKE5) */
 /* The MPC skin's pictures: the Take 5's panel, section by section, a section (or two that belong together) a page, as
  * the VST draws it. Where the VST's panel has the section (OSCILLATORS and MIXER; FILTER and ENVELOPES; EFFECT and
- * REVERB; CLOCK, ARPEGGIATOR and STEP SEQ) the page is the VST's own panel, painted by the VST's own code and enlarged,
- * its controls in their places; what the Take 5 keeps in its program menu sits beside it, under its own title. The
- * keyboard Take 5's sections the desktop panel has not (LFO 1 beside LFO 2; GLIDE RATE, VINTAGE, GLIDE, UNISON) are
- * drawn in the same hand:
+ * REVERB) the page is the VST's own panel, painted by the VST's own code and enlarged, its controls in their places;
+ * what the Take 5 keeps in its program menu sits beside it. The rest (LFO 1 beside LFO 2; the arpeggiator; GLIDE RATE,
+ * VINTAGE, unison, glide) is drawn in the same hand. A choice is a row of buttons, one a value (the arp's modes, the
+ * glide's), or a knob with a little display over it (the effect's type) or a display alone (the LFOs' destinations):
  *
- *   OSC      OSCILLATORS, MIXER, LOW SPLIT (+ key follow, osc 2 bypass)
+ *   OSC      OSCILLATORS, MIXER; LOW SPLIT bottom left, the keys and osc 2's bypass beside it
  *   FILTER   FILTER, ENVELOPES (+ key amount, the envelopes' delays, env 1's aux destination, env repeat)
  *   LFO      LFO 1: GLOBAL | LFO 2: PER VOICE  /  MOD 1-8  /  MOD 9-16 (the matrix on the display)
  *   FX       EFFECT, REVERB
- *   ARP      CLOCK, ARPEGGIATOR, STEP SEQ (+ the arp's mode, relatch)
+ *   ARP      CLOCK; ARPEGGIATOR (on, relatch, hold, octaves, repeats); MODE
  *   VOICE    GLIDE RATE, VINTAGE, VOLUME, OVERDRIVE, VOICE SPREAD, PROGRAM VOL; unison's and glide's settings; the
  *            VST's GLIDE, UNISON, HOLD; VOICES, QUALITY; the bend, the split point
  *
@@ -41,8 +41,9 @@ constexpr float OLED_ROW0 = 126, OLED_RH = 54;
 constexpr float OLED_COL[4] = {178, 270, 640, 820};
 
 struct Ctl {
-    enum Kind { knob, button, leds, fixed, cell } kind;   /* fixed: a button with no parameter, drawn into the
-                                                           * background; cell: a value on the display, its text the MPC's */
+    enum Kind { knob, button, leds, fixed, cell, radio } kind;   /* fixed: a button with no parameter, drawn into the
+                                                           * background; cell: a value on the display, its text the MPC's;
+                                                           * radio: a button a value, lit while it is the one */
     String id;
     float x = 0, y = 0;                  /* the centre (knob, button) */
     String legend;                       /* (a drawn page's; the VST's own pages have theirs in the background) */
@@ -52,8 +53,13 @@ struct Ctl {
     std::vector<Point<float>> pts;       /* LEDs: each one's centre */
     std::vector<int> vals;               /* LEDs: the value (its index) each one lights for */
     float ledR = 10.0f;                  /* an LED's size */
-    StringArray names;                   /* LEDs on a drawn page: each one's name, right of it */
+    StringArray names;                   /* LEDs on a drawn page: each one's name, right of it (radio: under it) */
     float nameW = 0;
+    std::vector<Point<float>> kleds;     /* a knob's own LEDs (OCTAVE): LED i lit at the knob's value i, drawn in its film
+                                          * strip (no LEDs of their own over the knob to take its touches) */
+    float legDy = 0;                     /* a knob's legend this much lower (room for its pictures round it) */
+    bool boxed = false;                  /* a cell on a panel page: in a little display of its own */
+    float bh = 0;                        /* a radio button's height (0: as wide as BW's) */
 };
 struct Sec {
     Rectangle<float> r;
@@ -168,6 +174,29 @@ struct Builder {
         c.cycle = centred;
         s.ctls.push_back(c);
     }
+    /* a value in a little display (the effect's type, a destination): its box; legend under it */
+    void box(Rectangle<float> r, const char *id, const char *leg = "")
+    {
+        Ctl c{Ctl::cell, id, r.getX(), r.getY(), leg};
+        c.size = r.getWidth();
+        c.nameW = r.getHeight();
+        c.cycle = true;
+        c.boxed = true;
+        s.ctls.push_back(c);
+    }
+    /* a button for each value (from the first, or as vals says), their names under them */
+    void R(std::vector<Point<float>> pts, const char *id, StringArray names = {}, std::vector<int> vals = {}, float w = BW, float h = BH)
+    {
+        auto r = rangeOf(id);
+        Ctl c{Ctl::radio, id};
+        c.names = names.isEmpty() ? r.names : names;
+        c.pts = std::move(pts);
+        for (size_t k = 0; k < c.pts.size(); k++)
+            c.vals.push_back(vals.empty() ? (int)k : vals[k]);
+        c.size = w;
+        c.bh = h;
+        s.ctls.push_back(c);
+    }
     /* a drawn page's */
     void sec(float x0, float y0, float x1, float y1, const char *t, int style = 0) { s.secs.push_back({{x0, y0, x1 - x0, y1 - y0}, t, style}); }
     void K(float x, float y, const char *id, const char *leg, float size = KS)
@@ -200,19 +229,21 @@ struct Builder {
 std::vector<Screen> screens()
 {
     std::vector<Screen> ps;
-    /* ------------------------------------------------------------------------ OSC: OSCILLATORS, MIXER (the VST's) */
+    /* ---------------------------------------------------- OSC: OSCILLATORS, MIXER (the VST's); LOW SPLIT and the keys */
     {
         Builder b;
         b.s.name = "OSC";
-        b.vst({152, 287, 676, 266}, 1.6f, 14, 8);
+        b.vst({152, 287, 676, 266}, 1.6f, 99, 8);
         for (int o = 0; o < 2; o++) {
             float y = o ? VO2 : VO1;
             const char *oct = o ? "o2_oct" : "o1_oct";
             b.vK(262, y, oct, KnobKind::plain);
-            std::vector<Point<float>> pts;
-            for (int i = 0; i < 5; i++)
-                pts.push_back(Point<float>(262.0f, y).getPointOnCircumference(40.0f, -1.45f + 0.36f * (float)i));
-            b.vL(oct, pts, {0, 1, 2, 3, 4});
+            auto &kc = b.s.ctls.back();
+            for (int i = 0; i < 5; i++) {
+                auto p = Point<float>(262.0f, y).getPointOnCircumference(40.0f, -1.45f + 0.36f * (float)i);
+                kc.kleds.push_back(b.at(p.x, p.y));
+            }
+            kc.ledR = 7.0f * b.sc();
             b.vK(382, y, o ? "o2_pitch" : "o1_pitch");
             b.vK(552, y, o ? "o2_shape" : "o1_shape");
         }
@@ -222,14 +253,14 @@ std::vector<Screen> screens()
         b.vK(774, VO1, "sub");
         b.vK(672, VO2, "o2_level");
         b.vK(774, VO2, "noise");
-        /* LOW SPLIT: the VST's own, beside the mixer */
-        b.vst({596, 566, 108, 80}, 1.7f, 1092, 140);
+        /* bottom left: LOW SPLIT, the VST's own; right of it the program menu's keys and OSC 2's way round the filter */
+        b.vst({596, 566, 108, 80}, 1.7f, 36, 436);
         b.vB(612, 592, "split2");
         b.vB(676, 592, "split1");
-        /* the program menu's: the keys, OSC 2's way round the filter */
-        b.B(190, 500, "o1_key", "OSC 1 KEY FOLLOW");
-        b.B(520, 500, "o2_key", "OSC 2 KEY FOLLOW");
-        b.B(850, 500, "o2_bypass", "OSC 2 FILTER BYPASS");
+        const float ky = b.at(0, 592).y;
+        b.B(330, ky, "o1_key", "OSC 1 KEY FOLLOW");
+        b.B(520, ky, "o2_key", "OSC 2 KEY FOLLOW");
+        b.B(710, ky, "o2_bypass", "OSC 2 FILTER BYPASS");
         ps.push_back(b.s);
     }
     /* ---------------------------------------------------------------------- FILTER: FILTER, ENVELOPES (the VST's) */
@@ -255,9 +286,10 @@ std::vector<Screen> screens()
         b.K(130, 470, "keyamt", "KEY AMOUNT");
         b.K(300, 470, "e1_del", "ENV 1 DELAY");
         b.K(470, 470, "e2_del", "ENV 2 DELAY");
-        b.K(640, 470, "e1_dest", "ENV 1 AUX DEST");
-        b.L(800, 432, "env_repeat", 200);
-        b.s.secs.push_back({{780, 512, 240, 20}, "ENVELOPE REPEAT", 3});
+        b.box({540, 390, 200, 34}, "e1_dest");
+        b.K(640, 476, "e1_dest", "ENV 1 AUX DEST");
+        b.R({{830, 460}, {930, 460}, {1030, 460}, {1140, 460}}, "env_repeat", {"OFF", "ENV 1", "ENV 2", "ENV 1+2"});
+        b.s.secs.push_back({{865, 512, 240, 20}, "ENVELOPE REPEAT", 3});
         ps.push_back(b.s);
     }
     /* ------------------------------------------------------- LFO: LFO 1: GLOBAL | LFO 2: PER VOICE (as the keyboard's) */
@@ -272,20 +304,20 @@ std::vector<Screen> screens()
             const char *suf[7] = {"freq", "amt", "shape", "sync", "dest", "reset", "slew"};
             for (int i = 0; i < 7; i++)
                 std::snprintf(ids[k][i], 16, "lfo%d_%s", k + 1, suf[i]);
-            Ctl c{Ctl::leds, ids[k][2]};
+            b.K(x0 + 120, 140, ids[k][0], "FREQUENCY", 92.0f);
+            b.K(x0 + 320, 140, ids[k][1], "AMOUNT", 92.0f);
+            /* SHAPE: a knob, its shapes' pictures round it where it points at each */
+            b.K(x0 + 520, 140, ids[k][2], "SHAPE", 92.0f);
+            b.s.ctls.back().legDy = 30.0f;
             for (int i = 0; i < NLFOSHAPE; i++) {
-                c.pts.push_back({x0 + 132.0f, 112.0f + 30.0f * (float)i});
-                c.vals.push_back(i);
-                b.s.icons.push_back({Rectangle<float>(x0 + 76.0f, 106.0f + 30.0f * (float)i, 36.0f, 13.0f), i});
+                float a = -2.62f + 5.24f * (float)i / (float)(NLFOSHAPE - 1);
+                auto c = Point<float>(x0 + 520, 140).getPointOnCircumference(76.0f, a);
+                b.s.icons.push_back({Rectangle<float>(34.0f, 13.0f).withCentre(c), i});
             }
-            b.s.ctls.push_back(c);
-            b.K(x0 + 280, 150, ids[k][0], "FREQUENCY", 92.0f);
-            b.K(x0 + 470, 150, ids[k][1], "AMOUNT", 92.0f);
-            b.B(x0 + 210, 330, ids[k][2], "SHAPE", true);
-            b.B(x0 + 360, 330, ids[k][3], "CLK SYNC");
-            b.B(x0 + 510, 330, ids[k][5], "KEY RESET");
-            b.K(x0 + 280, 478, ids[k][4], "DEST");
-            b.K(x0 + 470, 478, ids[k][6], "SLEW");
+            b.B(x0 + 120, 316, ids[k][3], "CLK SYNC");
+            b.B(x0 + 320, 316, ids[k][5], "KEY RESET");
+            b.K(x0 + 520, 316, ids[k][6], "SLEW", 80.0f);
+            b.box({x0 + 70, 430, 500, 52}, ids[k][4], "DESTINATION");
         }
         ps.push_back(b.s);
     }
@@ -316,6 +348,10 @@ std::vector<Screen> screens()
         b.vst({1332, 16, 468, 268}, 2.08f, 153, 10);
         b.vB(VFXX[0], VR1 - 6, "fx_on");
         b.vK(VFXX[1], VR1 - 4, "fx_type", KnobKind::encoder, VKD * 0.92f);
+        {
+            auto t = b.s.ctls.back();       /* the effect's name over TYPE */
+            b.box(Rectangle<float>(250.0f, 40.0f).withCentre({t.x, t.y - t.size * 0.5f - 44.0f}), "fx_type");
+        }
         b.vK(VFXX[2], VR1, "fx_time");
         b.vK(VFXX[3], VR1, "fx_mix");
         b.vK(VFXX[4], VR1, "fx_misc");
@@ -328,26 +364,26 @@ std::vector<Screen> screens()
         b.vK(VFXX[5], VR2, "rev_tone");
         ps.push_back(b.s);
     }
-    /* ------------------------------------------------------------ ARP: CLOCK, ARPEGGIATOR, STEP SEQ (the VST's) */
+    /* ----------------------------------------------- ARP: CLOCK; ARPEGGIATOR; its MODE, a button each (drawn) */
     {
         Builder b;
         b.s.name = "ARP";
-        b.vst({950, 16, 378, 268}, 2.05f, 12, 12);
-        b.vK(978, VR1 - 4, "bpm", KnobKind::encoder, VKD * 0.92f);
-        b.vK(1056, VR1 - 4, "divide", KnobKind::encoder, VKD * 0.92f);
-        b.vB(1017, VR2 - 6, "");                 /* (TAP TEMPO: the MPC's own tempo) */
-        b.vB(1126, VR1 - 6, "arp_on");
-        b.vK(1222, VR1 - 4, "arp_oct", KnobKind::encoder, VKD * 0.92f);
-        b.vL("arp_oct", {{1182.0f, VR1 - 30.0f}, {1182.0f, VR1 - 13.0f}, {1182.0f, VR1 + 4.0f}}, {2, 1, 0});
-        b.vK(1140, VR2 - 4, "arp_mode", KnobKind::encoder, VKD * 0.92f);
-        b.vK(1222, VR2 - 4, "arp_repeat", KnobKind::encoder, VKD * 0.92f);
-        b.vL("arp_repeat", {{1182.0f, VR2 - 30.0f}, {1182.0f, VR2 - 13.0f}, {1182.0f, VR2 + 4.0f}}, {3, 2, 1});
-        b.vB(1295, VR1 - 6, "");                 /* (RECORD: on the VST) */
-        b.vB(1295, VR2 - 6, "seq_play");
-        b.sec(808, 26, 1266, 562, "PROGRAM MENU: ARPEGGIATOR");
-        b.L(860, 110, "arp_mode", 130, {}, 30.0f);
-        b.B(1150, 120, "arp_relatch", "RELATCH");
-        b.B(1150, 300, "hold", "HOLD");
+        b.sec(20, 30, 420, 312, "CLOCK");
+        b.box({52, 66, 136, 40}, "bpm");
+        b.K(120, 180, "bpm", "BPM", 92.0f);
+        b.box({252, 66, 136, 40}, "divide");
+        b.K(320, 180, "divide", "CLOCK DIVIDE", 92.0f);
+        b.sec(440, 30, 1260, 312, "ARPEGGIATOR");
+        b.B(610, 104, "arp_on", "ON");
+        b.B(850, 104, "arp_relatch", "RELATCH");
+        b.B(1090, 104, "hold", "HOLD");
+        b.R({{560, 220}, {640, 220}, {720, 220}}, "arp_oct", {"1", "2", "3"});
+        b.s.secs.push_back({{520, 266, 240, 20}, "OCTAVES", 3});
+        b.R({{900, 220}, {980, 220}, {1060, 220}, {1140, 220}}, "arp_repeat", {"OFF", "1", "2", "3"});
+        b.s.secs.push_back({{900, 266, 240, 20}, "REPEATS", 3});
+        b.sec(20, 334, 1260, 566, "MODE");
+        b.R({{180, 440}, {410, 440}, {640, 440}, {870, 440}, {1100, 440}}, "arp_mode", {"UP", "DOWN", "UP + DOWN", "RANDOM", "ASSIGN"}, {},
+            110.0f, 60.0f);
         ps.push_back(b.s);
     }
     /* ------------------------- VOICE: the keyboard's left end, the output, unison and glide, the bend; the VST's keys */
@@ -359,23 +395,24 @@ std::vector<Screen> screens()
         for (int i = 0; i < 6; i++)
             b.K(140.0f + 200.0f * (float)i, 78, kn[i][0], kn[i][1], 84.0f);
         b.s.vlines.push_back({440.0f, {30.0f, 150.0f}});
-        /* the program menu's: unison, glide */
-        b.sec(14, 168, 1266, 372, "PROGRAM MENU: UNISON, GLIDE");
-        b.K(100, 262, "uni_voices", "UNI VOICES");
-        b.K(240, 262, "uni_detune", "UNI DETUNE");
-        b.K(380, 262, "uni_keymode", "KEY MODE");
-        b.L(436, 240, "uni_keymode", 70);
-        b.B(590, 254, "uni_retrig", "RETRIGGER");
-        b.K(750, 262, "o1_glide", "OSC 1 GLIDE");
-        b.K(890, 262, "o2_glide", "OSC 2 GLIDE");
-        b.L(980, 228, "glide_mode", 150);
+        /* the program menu's: unison | glide */
+        b.sec(14, 168, 1266, 380, "PROGRAM MENU: UNISON, GLIDE");
+        b.K(84, 262, "uni_voices", "UNI VOICES");
+        b.K(222, 262, "uni_detune", "UNI DETUNE");
+        b.R({{330, 252}, {405, 252}, {480, 252}}, "uni_keymode", {"LOW", "HIGH", "LAST"});
+        b.s.secs.push_back({{285, 300, 240, 20}, "KEY MODE", 3});
+        b.B(585, 252, "uni_retrig", "RETRIGGER");
+        b.s.vlines.push_back({660.0f, {200.0f, 360.0f}});
+        b.K(735, 262, "o1_glide", "OSC 1 GLIDE");
+        b.K(865, 262, "o2_glide", "OSC 2 GLIDE");
+        b.R({{1000, 232}, {1160, 232}, {1000, 312}, {1160, 312}}, "glide_mode", {"FIXED RATE", "FIXED RATE A", "FIXED TIME", "FIXED TIME A"});
         /* GLIDE, UNISON, HOLD: the VST's own bottom row; the voices, the bend */
-        b.vst({60, 566, 242, 56}, 1.95f, 20, 400);
+        b.vst({60, 566, 242, 56}, 1.95f, 20, 404);
         b.vB(96, 588, "glide");
         b.vB(184, 588, "unison");
         b.vB(268, 588, "hold");
-        b.L(540, 446, "voices", 120, {}, 30.0f);
-        b.L(540, 526, "quality", 120, {"ECO (2x)", "HIGH (4x)"}, 30.0f);
+        b.R({{560, 448}, {680, 448}}, "voices", {"5 VOICES", "10 VOICES"});
+        b.R({{560, 528}, {680, 528}}, "quality", {"ECO (2x)", "HIGH (4x)"});
         b.K(860, 486, "pb_up", "BEND UP");
         b.K(1010, 486, "pb_down", "BEND DOWN");
         b.K(1160, 486, "split_point", "SPLIT POINT");
@@ -385,6 +422,37 @@ std::vector<Screen> screens()
 }
 
 /* ----------------------------------------------------------------------------- drawing --- */
+/* an LED as the VST's (Look.cpp's drawLed), its glow kept within maxR of its centre: a picture of its own cuts
+ * nothing off */
+void drawLedFit(Graphics &g, Point<float> c, float s, float level, float maxR)
+{
+    const float rr = s * 0.5f, gr = jmin(s * 2.4f, maxR);
+    if (level > 0.02f && gr > rr) {
+        g.setGradientFill(ColourGradient(Colour(0xffff3a1a).withAlpha(0.62f * level), c.x, c.y, Colours::transparentBlack, c.x + gr, c.y, true));
+        g.fillEllipse(Rectangle<float>(gr * 2.0f, gr * 2.0f).withCentre(c));
+    }
+    g.setColour(Colours::black.withAlpha(0.75f));
+    g.fillEllipse(Rectangle<float>(rr * 2.5f, rr * 2.5f).withCentre(c.translated(0.2f, 0.5f)));
+    ColourGradient cg(Colour(0xff5a1712).interpolatedWith(Colour(0xffffd0a8), level), c.x - rr * 0.3f, c.y - rr * 0.35f,
+                      Colour(0xff250806).interpolatedWith(Colour(0xffe8200c), level), c.x + rr, c.y + rr, true);
+    g.setGradientFill(cg);
+    g.fillEllipse(Rectangle<float>(rr * 2.0f, rr * 2.0f).withCentre(c));
+    g.setColour(Colours::white.withAlpha(0.35f + 0.3f * level));
+    g.fillEllipse(Rectangle<float>(rr * 0.6f, rr * 0.45f).withCentre(c.translated(-rr * 0.32f, -rr * 0.38f)));
+}
+/* a little display (a cell's on a panel page): bezel, glass */
+void drawMiniOled(Graphics &g, Rectangle<float> box)
+{
+    g.setColour(Colours::black.withAlpha(0.55f));
+    g.fillRoundedRectangle(box.expanded(8.0f).translated(0.0f, 3.0f), 9.0f);
+    g.setGradientFill(ColourGradient(Colour(0xff2a2b2e), 0.0f, box.getY() - 7.0f, Colour(0xff121214), 0.0f, box.getBottom() + 7.0f, false));
+    g.fillRoundedRectangle(box.expanded(7.0f), 8.0f);
+    g.setColour(Colours::black);
+    g.fillRoundedRectangle(box.expanded(2.0f), 4.0f);
+    g.setColour(col::oledBg);
+    g.fillRoundedRectangle(box, 3.0f);
+}
+float buttonH(const Ctl &c);
 Image vstPanel;                          /* the VST's panel, its face and legends (no controls), twice its size */
 
 void drawScreen(Graphics &g, const Screen &pg)
@@ -473,8 +541,17 @@ void drawScreen(Graphics &g, const Screen &pg)
     for (auto &[ir, shape] : pg.icons)
         drawWaveIcon(g, ir, shape, 2.0f);
     for (auto &c : pg.ctls) {
-        if (c.kind == Ctl::knob && c.legend.isNotEmpty())
-            drawLegend(g, c.legend, Rectangle<float>(c.x - 80.0f, c.y + c.size * 0.5f + 2.0f, 160.0f, 20.0f), 15.5f);
+        if (c.kind == Ctl::cell && c.boxed) {
+            auto bx = Rectangle<float>(c.x, c.y, c.size, c.nameW);
+            drawMiniOled(g, bx);
+            if (c.legend.isNotEmpty())
+                drawLegend(g, c.legend, Rectangle<float>(bx.getCentreX() - 150.0f, bx.getBottom() + 12.0f, 300.0f, 20.0f), 15.5f);
+        } else if (c.kind == Ctl::radio) {
+            for (size_t i = 0; i < c.pts.size(); i++)
+                drawLegend(g, c.names[(int)i], Rectangle<float>(c.pts[i].x - 80.0f, c.pts[i].y + buttonH(c) * 0.5f + 6.0f, 160.0f, 20.0f),
+                           c.bh > BH ? 17.0f : 15.0f);
+        } else if (c.kind == Ctl::knob && c.legend.isNotEmpty())
+            drawLegend(g, c.legend, Rectangle<float>(c.x - 80.0f, c.y + c.size * 0.5f + 2.0f + c.legDy, 160.0f, 20.0f), 15.5f);
         else if (c.kind == Ctl::button && c.legend.isNotEmpty())
             drawLegend(g, c.legend, Rectangle<float>(c.x - 110.0f, c.y + BH * 0.5f + 6.0f, 220.0f, 20.0f), 15.0f);
         else if (c.kind == Ctl::leds && !c.names.isEmpty()) {
@@ -508,24 +585,71 @@ bool writePng(const Image &img, const File &f)
 }
 var rectVar(Rectangle<int> r) { return Array<var>{r.getX(), r.getY(), r.getWidth(), r.getHeight()}; }
 
-float buttonH(const Ctl &c) { return c.size * (c.size == BW ? BH / BW : VBH / VBW); }
+float buttonH(const Ctl &c)
+{
+    if (c.bh > 0)
+        return c.bh;
+    return c.size * (c.size == BW ? BH / BW : VBH / VBW);
+}
 
 Image drawCtl(const Image &bg, const Ctl &c, Rectangle<int> r, int index, int steps, int led = -1)
 {
     Image img(Image::RGB, r.getWidth(), r.getHeight(), true);
     Graphics g(img);
     g.drawImageAt(bg.getClippedImage(r), 0, 0);
-    g.addTransform(AffineTransform::translation((float)-r.getX(), (float)-r.getY()));
-    if (c.kind == Ctl::knob) {
-        float pos = steps > 1 ? (float)index / (float)(steps - 1) : 0.0f;
-        auto kr = Rectangle<float>(c.size, c.size).withCentre({c.x, c.y});
-        drawKnob(g, kr, c.kk, true);
-        drawKnobPointer(g, kr, pos, c.kk);
-    } else if (c.kind == Ctl::button) {
-        bool lit = !c.cycle && index > 0;
-        drawButton(g, Rectangle<float>(c.size, buttonH(c)).withCentre({c.x, c.y}), lit, false, false);
-    } else
-        drawLed(g, c.pts[(size_t)led], c.ledR, index >= 0 ? 1.0f : 0.0f);
+    /* the control on a layer of its own, let into the background at the picture's edges (a glow or a shadow cut off
+     * at them would show as a line) */
+    Image layer(Image::ARGB, r.getWidth(), r.getHeight(), true);
+    Rectangle<float> body;               /* the control itself (kept whole); what lies round it fades out to the edge */
+    {
+        Graphics lg(layer);
+        lg.addTransform(AffineTransform::translation((float)-r.getX(), (float)-r.getY()));
+        if (c.kind == Ctl::knob) {
+            float pos = steps > 1 ? (float)index / (float)(steps - 1) : 0.0f;
+            auto kr = Rectangle<float>(c.size, c.size).withCentre({c.x, c.y});
+            for (size_t i = 0; i < c.kleds.size(); i++)
+                drawLedFit(lg, c.kleds[i], c.ledR, (int)i == index ? 1.0f : 0.0f, c.ledR * 2.4f);
+            drawKnob(lg, kr, c.kk, true);
+            drawKnobPointer(lg, kr, pos, c.kk);
+            body = kr;
+            for (auto &lp : c.kleds)
+                body = body.getUnion(Rectangle<float>(c.ledR * 1.3f, c.ledR * 1.3f).withCentre(lp));
+        } else if (c.kind == Ctl::button) {
+            bool lit = !c.cycle && index > 0;
+            body = Rectangle<float>(c.size, buttonH(c)).withCentre({c.x, c.y});
+            drawButton(lg, body, lit, false, false);
+        } else if (c.kind == Ctl::radio) {
+            auto p = c.pts[(size_t)led];
+            body = Rectangle<float>(c.size, buttonH(c)).withCentre(p);
+            drawButton(lg, body, index >= 0, false, false);
+            drawLegend(lg, c.names[led], Rectangle<float>(p.x - 80.0f, p.y + buttonH(c) * 0.5f + 6.0f, 160.0f, 20.0f), c.bh > BH ? 17.0f : 15.0f);
+        } else {
+            auto p = c.pts[(size_t)led];
+            float room = jmin(jmin(p.x - (float)r.getX(), (float)r.getRight() - p.x), jmin(p.y - (float)r.getY(), (float)r.getBottom() - p.y));
+            drawLedFit(lg, p, c.ledR, index >= 0 ? 1.0f : 0.0f, room - 1.0f);
+            body = Rectangle<float>(c.ledR * 1.3f, c.ledR * 1.3f).withCentre(p);
+        }
+    }
+    body = body.translated((float)-r.getX(), (float)-r.getY());
+    const int w = r.getWidth(), h = r.getHeight();
+    auto along = [](float v, float lo, float b0, float b1, float hi) {   /* 1 over the body, to 0 at the edge */
+        if (v < b0)
+            return b0 - lo > 0.5f ? jlimit(0.0f, 1.0f, (v - lo) / (b0 - lo)) : 1.0f;
+        if (v > b1)
+            return hi - b1 > 0.5f ? jlimit(0.0f, 1.0f, (hi - v) / (hi - b1)) : 1.0f;
+        return 1.0f;
+    };
+    for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++) {
+            float a = jmin(along((float)x + 0.5f, 0.0f, body.getX(), body.getRight(), (float)w),
+                           along((float)y + 0.5f, 0.0f, body.getY(), body.getBottom(), (float)h));
+            if (a < 1.0f) {
+                a = a * a * (3.0f - 2.0f * a);
+                auto px = layer.getPixelAt(x, y);
+                layer.setPixelAt(x, y, px.withAlpha(px.getFloatAlpha() * a));
+            }
+        }
+    g.drawImageAt(layer, 0, 0);
     return img;
 }
 } // namespace
@@ -557,6 +681,21 @@ int main(int argc, char **argv)
         writePng(bg, dir.getChildFile(tag + "_panel.png"));
         Array<var> list;
         int n = 0;
+        /* what takes touches where: no two may overlap (a knob's round face may have a small one in its picture's
+         * corner: make_skin.py puts the small ones on top) */
+        struct Hit {
+            String id;
+            Rectangle<int> r;
+            bool knob;
+            Point<float> c;
+            float rad;
+        };
+        std::vector<Hit> hits;
+        std::vector<Point<float>> allLeds;
+        for (auto &c : pg.ctls)
+            if (c.kind == Ctl::leds)
+                for (auto &p : c.pts)
+                    allLeds.push_back(p);
         for (auto &c : pg.ctls) {
             if (c.kind == Ctl::fixed)
                 continue;
@@ -571,6 +710,7 @@ int main(int argc, char **argv)
                 co->setProperty("names", nm);
                 co->setProperty("kind", "cell");
                 co->setProperty("rect", rectVar(Rectangle<float>(c.x, c.y, c.size, c.nameW).toNearestInt()));
+                hits.push_back({c.id, Rectangle<float>(c.x, c.y, c.size, c.nameW).toNearestInt(), false, {}, 0});
                 co->setProperty("centred", c.cycle);
                 co->setProperty("bipolar", bipolarOf(c.id));
                 list.add(var(co));
@@ -587,7 +727,11 @@ int main(int argc, char **argv)
             o->setProperty("names", names);
             String base = tag + "_" + String(n++).paddedLeft('0', 3) + "_" + c.id.retainCharacters("abcdefghijklmnopqrstuvwxyz0123456789_");
             if (c.kind == Ctl::knob) {
-                auto r = Rectangle<float>(c.size + 6.0f, c.size + 6.0f).withCentre({c.x, c.y}).toNearestInt();
+                auto rf = Rectangle<float>(c.size + 6.0f, c.size + 6.0f).withCentre({c.x, c.y});
+                for (auto &p : c.kleds)
+                    rf = rf.getUnion(Rectangle<float>(c.ledR * 5.0f, c.ledR * 5.0f).withCentre(p));
+                auto r = rf.toNearestInt();
+                hits.push_back({c.id, r, true, {c.x, c.y}, c.size * 0.5f});
                 int frames = jmax(2, jmin(steps, 128, 9800 / r.getHeight()));
                 Image strip(Image::RGB, r.getWidth(), r.getHeight() * frames, true);
                 {
@@ -600,7 +744,7 @@ int main(int argc, char **argv)
                 writePng(strip, dir.getChildFile(base + "_knob.png"));
                 auto fr = r;
                 if (c.legend.isNotEmpty())
-                    fr = r.getUnion(Rectangle<float>(c.x - 66.0f, c.y + c.size * 0.5f, 132.0f, 24.0f).toNearestInt());
+                    fr = r.getUnion(Rectangle<float>(c.x - 66.0f, c.y + c.size * 0.5f + c.legDy, 132.0f, 24.0f).toNearestInt());
                 o->setProperty("kind", "knob");
                 o->setProperty("bipolar", bipolarOf(c.id));
                 o->setProperty("rect", rectVar(r));
@@ -608,7 +752,8 @@ int main(int argc, char **argv)
                 o->setProperty("frames", frames);
                 o->setProperty("strip", base + "_knob.png");
             } else if (c.kind == Ctl::button) {
-                auto r = Rectangle<float>(c.size + 8.0f, buttonH(c) + 8.0f).withCentre({c.x, c.y}).toNearestInt();
+                auto r = Rectangle<float>(c.size + 4.0f, buttonH(c) + 4.0f).withCentre({c.x, c.y}).toNearestInt();
+                hits.push_back({c.id, r, false, {}, 0});
                 o->setProperty("kind", "button");
                 o->setProperty("rect", rectVar(r));
                 Array<var> rs;
@@ -623,15 +768,40 @@ int main(int argc, char **argv)
                     rs.add(var(ro));
                 }
                 o->setProperty("ranges", rs);
+            } else if (c.kind == Ctl::radio) {
+                /* a button a value: the LED rows' way (a picture lit and unlit each, the value its press gives), the
+                 * button and its name the place to touch */
+                o->setProperty("kind", "leds");
+                Array<var> rows;
+                for (size_t k = 0; k < c.pts.size(); k++) {
+                    auto p = c.pts[k];
+                    float w = c.size + 24.0f, h = buttonH(c);
+                    auto r = Rectangle<float>(p.x - w * 0.5f, p.y - h * 0.5f - 4.0f, w, h + 32.0f).toNearestInt();
+                    hits.push_back({c.id, r, false, {}, 0});
+                    auto *ro = new DynamicObject();
+                    ro->setProperty("rect", rectVar(r));
+                    ro->setProperty("value", c.vals[k]);
+                    String on = base + "_btn" + String((int)k) + "_on.png", off = base + "_btn" + String((int)k) + "_off.png";
+                    writePng(drawCtl(bg, c, r, 1, steps, (int)k), dir.getChildFile(on));
+                    writePng(drawCtl(bg, c, r, -1, steps, (int)k), dir.getChildFile(off));
+                    ro->setProperty("on", on);
+                    ro->setProperty("off", off);
+                    rows.add(var(ro));
+                }
+                o->setProperty("rows", rows);
             } else {
                 o->setProperty("kind", "leds");
                 Array<var> rows;
                 for (size_t k = 0; k < c.pts.size(); k++) {
                     float hw = c.ledR * 1.6f + 4.0f;
+                    for (auto &q : allLeds)          /* (no closer than half way to the next LED) */
+                        if (q != c.pts[k])
+                            hw = jmin(hw, q.getDistanceFrom(c.pts[k]) * 0.5f - 0.5f);
                     auto rr = Rectangle<float>(c.pts[k].x - hw, c.pts[k].y - hw, hw * 2.0f, hw * 2.0f);
                     if (!c.names.isEmpty())   /* (its name with it: a bigger place to touch) */
                         rr = rr.withRight(c.pts[k].x + 16.0f + c.nameW);
-                    auto r = rr.toNearestInt();
+                    auto r = rr.getSmallestIntegerContainer().reduced(1);
+                    hits.push_back({c.id, r, false, {}, 0});
                     auto *ro = new DynamicObject();
                     ro->setProperty("rect", rectVar(r));
                     ro->setProperty("value", c.vals[k]);
@@ -646,6 +816,26 @@ int main(int argc, char **argv)
             }
             list.add(var(o));
         }
+        int clashes = 0;
+        for (size_t i = 0; i < hits.size(); i++)
+            for (size_t j = i + 1; j < hits.size(); j++) {
+                auto &a = hits[i], &b = hits[j];
+                if (!a.r.intersects(b.r))
+                    continue;
+                bool bad = true;
+                if (a.knob != b.knob) {          /* a small one in a knob picture's corner: off its face */
+                    auto &k = a.knob ? a : b, &o2 = a.knob ? b : a;
+                    auto rr = o2.r.toFloat();
+                    auto np = Point<float>(jlimit(rr.getX(), rr.getRight(), k.c.x), jlimit(rr.getY(), rr.getBottom(), k.c.y));
+                    bad = np.getDistanceFrom(k.c) < k.rad;
+                }
+                if (bad) {
+                    std::fprintf(stderr, "%s: %s and %s overlap\n", pg.name.toRawUTF8(), a.id.toRawUTF8(), b.id.toRawUTF8());
+                    clashes++;
+                }
+            }
+        if (clashes)
+            return 1;
         auto *po = new DynamicObject();
         po->setProperty("name", pg.name);
         po->setProperty("background", tag + "_panel.png");

@@ -10,10 +10,14 @@ value; this places each picture where it was cut from, bound to the MPC plugin's
 
   knobs      film strips (a frame a value), dragged; a double tap opens the MPC's editor (its list for a choice)
   buttons    a picture for each value; a tap switches it (or steps to the next value: SHAPE)
-  LED lists  each row a radio button
+  LED lists  each row a radio button (and so the rows of buttons, a button a value: the arp's modes, the glide's)
+  values     the parameter's text on a display (the matrix; the effect's type, the destinations), dragged
 
-The pages (the function keys): OSC, FILTER, LFO, MOD, FX, PLAY; OSC, FILTER and MOD have a second half (the key
-pressed again). On each the 16 Q-Links turn up to four groups, the top row of Q-Links the first group and so on down.
+The buttons and LEDs lie over the knobs (one may sit in a knob picture's corner; the renderer allows none over a face).
+
+The pages (the function keys): OSC, FILTER, LFO, FX, ARP, VOICE; LFO has two more, MOD 1-8 and MOD 9-16 (the key
+pressed again). On each the 16 Q-Links turn up to four groups, the top row of Q-Links the first group and so on
+down.
 Standard library only (Pillow, if there, makes the pictures smaller).
 """
 import json
@@ -61,8 +65,9 @@ PAGES = [
                             (["e1_att", "e1_dec", "e1_sus", "e1_rel"], False),
                             (["e2_att", "e2_dec", "e2_sus", "e2_rel"], False),
                             (["e1_amt", "e2_amt", "e1_del", "e2_del"], False)])]),
-    ("LFO", [("LFO", [(["lfo1_freq", "lfo1_amt", "lfo1_dest", "lfo1_slew"], False),
-                      (["lfo2_freq", "lfo2_amt", "lfo2_dest", "lfo2_slew"], False)]),
+    ("LFO", [("LFO", [(["lfo1_freq", "lfo1_amt", "lfo1_shape", "lfo1_slew"], False),
+                      (["lfo2_freq", "lfo2_amt", "lfo2_shape", "lfo2_slew"], False),
+                      (["lfo1_dest", "lfo2_dest"], False)]),
              ("MOD 1-8", [(["mod1_amt", "mod2_amt", "mod3_amt", "mod4_amt"], False),
                           (["mod5_amt", "mod6_amt", "mod7_amt", "mod8_amt"], False),
                           (["mod1_dst", "mod2_dst", "mod3_dst", "mod4_dst"], False),
@@ -191,7 +196,9 @@ def main(argv):
         kids = [entry("panel", "Image", image_data(use(page["background"])), bounds((0, 0, 1280, 628)))]
         boxes, legends = [], []
 
-        for i, c in enumerate(page["controls"]):
+        # the knobs and the values first, the buttons and LEDs over them (a button may sit in a knob picture's corner)
+        order = sorted(enumerate(page["controls"]), key=lambda ic: ic[1]["kind"] in ("button", "leds"))
+        for i, c in order:
             idx = mpc(c["id"])
             if c["names"]:
                 names[idx] = c["names"]
