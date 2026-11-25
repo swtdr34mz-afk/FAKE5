@@ -59,7 +59,7 @@ def mpc(pid):
 PAGES = [
     ("OSC", [("OSC", [(["o1_oct", "o1_pitch", "o1_shape", "o1_level"], False),
                       (["o2_oct", "o2_pitch", "o2_shape", "o2_level"], False),
-                      (["sub", "noise"], False),
+                      (["sub", "noise", "split_point"], False),
                       ([], False)])]),
     ("FILTER", [("FILTER", [(["cutoff", "reso", "drive", "keyamt"], False),
                             (["e1_att", "e1_dec", "e1_sus", "e1_rel"], False),
@@ -81,9 +81,9 @@ PAGES = [
                     (["rev_tone"], False)])]),
     ("ARP", [("ARP", [(["bpm", "divide", "arp_oct", "arp_repeat"], False),
                       (["arp_mode"], False)])]),
-    ("VOICE", [("VOICE", [(["glide_rate", "vintage", "vol", "overdrive"], False),
-                          (["spread", "pgm_vol", "uni_voices", "uni_detune"], False),
-                          (["uni_keymode", "o1_glide", "o2_glide", "split_point"], False),
+    ("VOICE", [("VOICE", [(["spread", "vintage", "vol", "overdrive"], False),
+                          (["glide_rate", "pgm_vol", "uni_voices", "uni_detune"], False),
+                          (["uni_keymode", "o1_glide", "o2_glide"], False),
                           (["pb_up", "pb_down"], False)])]),
 ]
 # Program (Track) mode: the knobs as the MPC's own program knobs, bottom left Q-Link 1

@@ -7,13 +7,13 @@
  * VINTAGE, unison, glide) is drawn in the same hand. A choice is a row of buttons, one a value (the arp's modes, the
  * glide's), or a knob with a little display over it (the effect's type) or a display alone (the LFOs' destinations):
  *
- *   OSC      OSCILLATORS, MIXER; LOW SPLIT bottom left, the keys and osc 2's bypass beside it
+ *   OSC      OSCILLATORS, MIXER; under them LOW SPLIT and its SPLIT POINT, the keys and osc 2's bypass
  *   FILTER   FILTER, ENVELOPES (+ key amount, the envelopes' delays, env 1's aux destination, env repeat)
  *   LFO      LFO 1: GLOBAL | LFO 2: PER VOICE  /  MOD 1-8  /  MOD 9-16 (the matrix on the display)
  *   FX       EFFECT, REVERB
  *   ARP      CLOCK; ARPEGGIATOR (on, relatch, hold, octaves, repeats); MODE
  *   VOICE    GLIDE RATE, VINTAGE, VOLUME, OVERDRIVE, VOICE SPREAD, PROGRAM VOL; unison's and glide's settings; the
- *            VST's GLIDE, UNISON, HOLD; VOICES, QUALITY; the bend, the split point
+ *            VST's GLIDE, UNISON, HOLD; VOICES, QUALITY; the bend
  *
  * Each screen is drawn at the MPC's 1280 x 628 and cut up: its background, and every control at every value it can
  * take (a knob's film strip, a button's look for each value with the value a press gives, an LED's on and off).
@@ -71,6 +71,7 @@ struct Crop {
     Rectangle<float> src;                /* the VST panel's part shown */
     float s = 1.0f;
     Point<float> off;                    /* its top left on the page */
+    float fade = 28.0f;                  /* its edges let into the page over this many pixels */
 };
 struct Screen {
     String name;
@@ -126,7 +127,7 @@ bool bipolarOf(const String &id)
 struct Builder {
     Screen s;
     /* the VST's panel, its part src at scale sc, its top left at (x, y) on the page */
-    void vst(Rectangle<float> src, float sc, float x, float y) { s.crops.push_back({src, sc, {x, y}}); }
+    void vst(Rectangle<float> src, float sc, float x, float y, float fade = 28.0f) { s.crops.push_back({src, sc, {x, y}, fade}); }
     Point<float> at(float vx, float vy) const
     {
         auto &c = s.crops.back();
@@ -253,14 +254,16 @@ std::vector<Screen> screens()
         b.vK(774, VO1, "sub");
         b.vK(672, VO2, "o2_level");
         b.vK(774, VO2, "noise");
-        /* bottom left: LOW SPLIT, the VST's own; right of it the program menu's keys and OSC 2's way round the filter */
-        b.vst({596, 566, 108, 80}, 1.7f, 36, 436);
+        /* the bottom row, in the middle: LOW SPLIT (the VST's own) and its SPLIT POINT; the program menu's keys and
+         * OSC 2's way round the filter */
+        b.vst({596, 566, 108, 72}, 1.7f, 198, 436, 6.0f);
         b.vB(612, 592, "split2");
         b.vB(676, 592, "split1");
         const float ky = b.at(0, 592).y;
-        b.B(330, ky, "o1_key", "OSC 1 KEY FOLLOW");
-        b.B(520, ky, "o2_key", "OSC 2 KEY FOLLOW");
-        b.B(710, ky, "o2_bypass", "OSC 2 FILTER BYPASS");
+        b.K(462, ky + 2, "split_point", "SPLIT POINT");
+        b.B(612, ky, "o1_key", "OSC 1 KEY FOLLOW");
+        b.B(802, ky, "o2_key", "OSC 2 KEY FOLLOW");
+        b.B(992, ky, "o2_bypass", "OSC 2 FILTER BYPASS");
         ps.push_back(b.s);
     }
     /* ---------------------------------------------------------------------- FILTER: FILTER, ENVELOPES (the VST's) */
@@ -390,8 +393,8 @@ std::vector<Screen> screens()
     {
         Builder b;
         b.s.name = "VOICE";
-        const char *kn[6][2] = {{"glide_rate", "GLIDE RATE"}, {"vintage", "VINTAGE"}, {"vol", "VOLUME"},
-                                {"overdrive", "OVERDRIVE"}, {"spread", "VOICE SPREAD"}, {"pgm_vol", "PROGRAM VOL"}};
+        const char *kn[6][2] = {{"spread", "VOICE SPREAD"}, {"vintage", "VINTAGE"}, {"vol", "VOLUME"},
+                                {"overdrive", "OVERDRIVE"}, {"glide_rate", "GLIDE RATE"}, {"pgm_vol", "PROGRAM VOL"}};
         for (int i = 0; i < 6; i++)
             b.K(140.0f + 200.0f * (float)i, 78, kn[i][0], kn[i][1], 84.0f);
         b.s.vlines.push_back({440.0f, {30.0f, 150.0f}});
@@ -413,9 +416,8 @@ std::vector<Screen> screens()
         b.vB(268, 588, "hold");
         b.R({{560, 448}, {680, 448}}, "voices", {"5 VOICES", "10 VOICES"});
         b.R({{560, 528}, {680, 528}}, "quality", {"ECO (2x)", "HIGH (4x)"});
-        b.K(860, 486, "pb_up", "BEND UP");
-        b.K(1010, 486, "pb_down", "BEND DOWN");
-        b.K(1160, 486, "split_point", "SPLIT POINT");
+        b.K(900, 486, "pb_up", "BEND UP");
+        b.K(1100, 486, "pb_down", "BEND DOWN");
         ps.push_back(b.s);
     }
     return ps;
@@ -469,7 +471,7 @@ void drawScreen(Graphics &g, const Screen &pg)
             pg2.setImageResamplingQuality(Graphics::highResamplingQuality);
             pg2.drawImage(vstPanel, 0, 0, w, h, src.getX(), src.getY(), src.getWidth(), src.getHeight());
         }
-        const float F = 28.0f;
+        const float F = cr.fade;
         for (int y = 0; y < h; y++)
             for (int x = 0; x < w; x++) {
                 float d = jmin(jmin((float)x, (float)(w - 1 - x)), jmin((float)y, (float)(h - 1 - y)));

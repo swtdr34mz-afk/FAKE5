@@ -1209,6 +1209,108 @@
           }
         },
         {
+          "key": "osc knob 14 split_point",
+          "value": {
+            "version": 2,
+            "actions": [
+              {
+                "version": 1,
+                "onAction": "Mouse Down",
+                "handler": "Q-Link",
+                "handleName": "Data",
+                "additionalData": ""
+              },
+              {
+                "version": 1,
+                "onAction": "Double Click",
+                "handler": "Show Overlay",
+                "handleName": "Data",
+                "additionalData": "knob overlay"
+              },
+              {
+                "version": 1,
+                "onAction": "Enter Pressed",
+                "handler": "Show Overlay",
+                "handleName": "Data",
+                "additionalData": "knob overlay"
+              }
+            ],
+            "backgroundData": {
+              "version": 1,
+              "focussed": {
+                "version": 1,
+                "colour": "0",
+                "image": ""
+              },
+              "unfocussed": {
+                "version": 1,
+                "colour": "0",
+                "image": ""
+              }
+            },
+            "ignoreMousePresses": false,
+            "disableCoarseDataWheel": false,
+            "componentsData": [
+              {
+                "version": 2,
+                "componentData": {
+                  "version": 1,
+                  "name": "knob",
+                  "type": "Knob",
+                  "data": {
+                    "version": 3,
+                    "knobType": "FilmStrip",
+                    "filmStrip": "osc_014_split_point_knob.png",
+                    "numFrames": 122,
+                    "invert": false,
+                    "dragOrientation": "Vertical",
+                    "handleName": "Data"
+                  }
+                },
+                "handle remapping": {
+                  "version": 1,
+                  "map": []
+                },
+                "bounds": {
+                  "version": 1,
+                  "acceptsHWFocus": "No",
+                  "showWhenDataModelInvalid": "Show",
+                  "whenVisible": "Always",
+                  "boundsType": "Absolute",
+                  "bounds": "26 0 80 80"
+                }
+              },
+              {
+                "version": 2,
+                "componentData": {
+                  "version": 1,
+                  "name": "focus",
+                  "type": "Focus",
+                  "data": {
+                    "version": 1,
+                    "backgroundColour": "19ffffff",
+                    "outlineColour": "ffe81f40",
+                    "backgroundInset": 1.0,
+                    "outlineThickness": 1.0
+                  }
+                },
+                "handle remapping": {
+                  "version": 1,
+                  "map": []
+                },
+                "bounds": {
+                  "version": 1,
+                  "acceptsHWFocus": "No",
+                  "showWhenDataModelInvalid": "Show",
+                  "whenVisible": "WhenFocussed",
+                  "boundsType": "Absolute",
+                  "bounds": "0 0 132 101"
+                }
+              }
+            ]
+          }
+        },
+        {
           "key": "filter knob 0 reso",
           "value": {
             "version": 2,
@@ -10875,7 +10977,7 @@
           }
         },
         {
-          "key": "voice knob 0 glide_rate",
+          "key": "voice knob 0 spread",
           "value": {
             "version": 2,
             "actions": [
@@ -10926,7 +11028,7 @@
                   "data": {
                     "version": 3,
                     "knobType": "FilmStrip",
-                    "filmStrip": "voice_000_glide_rate_knob.png",
+                    "filmStrip": "voice_000_spread_knob.png",
                     "numFrames": 108,
                     "invert": false,
                     "dragOrientation": "Vertical",
@@ -11283,7 +11385,7 @@
           }
         },
         {
-          "key": "voice knob 4 spread",
+          "key": "voice knob 4 glide_rate",
           "value": {
             "version": 2,
             "actions": [
@@ -11334,7 +11436,7 @@
                   "data": {
                     "version": 3,
                     "knobType": "FilmStrip",
-                    "filmStrip": "voice_004_spread_knob.png",
+                    "filmStrip": "voice_004_glide_rate_knob.png",
                     "numFrames": 108,
                     "invert": false,
                     "dragOrientation": "Vertical",
@@ -12097,108 +12199,6 @@
               }
             ]
           }
-        },
-        {
-          "key": "voice knob 20 split_point",
-          "value": {
-            "version": 2,
-            "actions": [
-              {
-                "version": 1,
-                "onAction": "Mouse Down",
-                "handler": "Q-Link",
-                "handleName": "Data",
-                "additionalData": ""
-              },
-              {
-                "version": 1,
-                "onAction": "Double Click",
-                "handler": "Show Overlay",
-                "handleName": "Data",
-                "additionalData": "knob overlay"
-              },
-              {
-                "version": 1,
-                "onAction": "Enter Pressed",
-                "handler": "Show Overlay",
-                "handleName": "Data",
-                "additionalData": "knob overlay"
-              }
-            ],
-            "backgroundData": {
-              "version": 1,
-              "focussed": {
-                "version": 1,
-                "colour": "0",
-                "image": ""
-              },
-              "unfocussed": {
-                "version": 1,
-                "colour": "0",
-                "image": ""
-              }
-            },
-            "ignoreMousePresses": false,
-            "disableCoarseDataWheel": false,
-            "componentsData": [
-              {
-                "version": 2,
-                "componentData": {
-                  "version": 1,
-                  "name": "knob",
-                  "type": "Knob",
-                  "data": {
-                    "version": 3,
-                    "knobType": "FilmStrip",
-                    "filmStrip": "voice_020_split_point_knob.png",
-                    "numFrames": 122,
-                    "invert": false,
-                    "dragOrientation": "Vertical",
-                    "handleName": "Data"
-                  }
-                },
-                "handle remapping": {
-                  "version": 1,
-                  "map": []
-                },
-                "bounds": {
-                  "version": 1,
-                  "acceptsHWFocus": "No",
-                  "showWhenDataModelInvalid": "Show",
-                  "whenVisible": "Always",
-                  "boundsType": "Absolute",
-                  "bounds": "26 0 80 80"
-                }
-              },
-              {
-                "version": 2,
-                "componentData": {
-                  "version": 1,
-                  "name": "focus",
-                  "type": "Focus",
-                  "data": {
-                    "version": 1,
-                    "backgroundColour": "19ffffff",
-                    "outlineColour": "ffe81f40",
-                    "backgroundInset": 1.0,
-                    "outlineThickness": 1.0
-                  }
-                },
-                "handle remapping": {
-                  "version": 1,
-                  "map": []
-                },
-                "bounds": {
-                  "version": 1,
-                  "acceptsHWFocus": "No",
-                  "showWhenDataModelInvalid": "Show",
-                  "whenVisible": "WhenFocussed",
-                  "boundsType": "Absolute",
-                  "bounds": "0 0 132 101"
-                }
-              }
-            ]
-          }
         }
       ]
     },
@@ -12825,6 +12825,35 @@
               "version": 2,
               "componentData": {
                 "version": 1,
+                "name": "split_point",
+                "type": "osc knob 14 split_point",
+                "data": {
+                  "version": 1,
+                  "handleName": "Data"
+                }
+              },
+              "handle remapping": {
+                "version": 1,
+                "map": [
+                  {
+                    "key": "Data",
+                    "value": "Parameter 136"
+                  }
+                ]
+              },
+              "bounds": {
+                "version": 1,
+                "acceptsHWFocus": "Yes",
+                "showWhenDataModelInvalid": "Show",
+                "whenVisible": "Always",
+                "boundsType": "Absolute",
+                "bounds": "396 442 132 101"
+              }
+            },
+            {
+              "version": 2,
+              "componentData": {
+                "version": 1,
                 "name": "sync",
                 "type": "Button",
                 "data": {
@@ -12967,7 +12996,7 @@
                 "showWhenDataModelInvalid": "Hide",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "32 457 62 46",
+                "bounds": "194 457 62 46",
                 "additionalInvalidatingHandles": ["IndexedEnabling/0/2/Parameter 135"]
               }
             },
@@ -12997,7 +13026,7 @@
                 "showWhenDataModelInvalid": "Hide",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "32 457 62 46",
+                "bounds": "194 457 62 46",
                 "additionalInvalidatingHandles": ["IndexedEnabling/1/2/Parameter 135"]
               }
             },
@@ -13027,7 +13056,7 @@
                 "showWhenDataModelInvalid": "Hide",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "141 457 62 46",
+                "bounds": "303 457 62 46",
                 "additionalInvalidatingHandles": ["IndexedEnabling/0/2/Parameter 134"]
               }
             },
@@ -13057,7 +13086,7 @@
                 "showWhenDataModelInvalid": "Hide",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "141 457 62 46",
+                "bounds": "303 457 62 46",
                 "additionalInvalidatingHandles": ["IndexedEnabling/1/2/Parameter 134"]
               }
             },
@@ -13069,8 +13098,8 @@
                 "type": "Button",
                 "data": {
                   "version": 2,
-                  "onImage": "osc_014_o1_key_button_0.png",
-                  "offImage": "osc_014_o1_key_button_0.png",
+                  "onImage": "osc_015_o1_key_button_0.png",
+                  "offImage": "osc_015_o1_key_button_0.png",
                   "buttonId": 1,
                   "numButtonsInGroup": 2,
                   "handleName": "Parameter 8",
@@ -13087,7 +13116,7 @@
                 "showWhenDataModelInvalid": "Hide",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "305 462 50 36",
+                "bounds": "587 462 50 36",
                 "additionalInvalidatingHandles": ["IndexedEnabling/0/2/Parameter 8"]
               }
             },
@@ -13099,8 +13128,8 @@
                 "type": "Button",
                 "data": {
                   "version": 2,
-                  "onImage": "osc_014_o1_key_button_1.png",
-                  "offImage": "osc_014_o1_key_button_1.png",
+                  "onImage": "osc_015_o1_key_button_1.png",
+                  "offImage": "osc_015_o1_key_button_1.png",
                   "buttonId": 0,
                   "numButtonsInGroup": 2,
                   "handleName": "Parameter 8",
@@ -13117,7 +13146,7 @@
                 "showWhenDataModelInvalid": "Hide",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "305 462 50 36",
+                "bounds": "587 462 50 36",
                 "additionalInvalidatingHandles": ["IndexedEnabling/1/2/Parameter 8"]
               }
             },
@@ -13129,8 +13158,8 @@
                 "type": "Button",
                 "data": {
                   "version": 2,
-                  "onImage": "osc_015_o2_key_button_0.png",
-                  "offImage": "osc_015_o2_key_button_0.png",
+                  "onImage": "osc_016_o2_key_button_0.png",
+                  "offImage": "osc_016_o2_key_button_0.png",
                   "buttonId": 1,
                   "numButtonsInGroup": 2,
                   "handleName": "Parameter 9",
@@ -13147,7 +13176,7 @@
                 "showWhenDataModelInvalid": "Hide",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "495 462 50 36",
+                "bounds": "777 462 50 36",
                 "additionalInvalidatingHandles": ["IndexedEnabling/0/2/Parameter 9"]
               }
             },
@@ -13159,8 +13188,8 @@
                 "type": "Button",
                 "data": {
                   "version": 2,
-                  "onImage": "osc_015_o2_key_button_1.png",
-                  "offImage": "osc_015_o2_key_button_1.png",
+                  "onImage": "osc_016_o2_key_button_1.png",
+                  "offImage": "osc_016_o2_key_button_1.png",
                   "buttonId": 0,
                   "numButtonsInGroup": 2,
                   "handleName": "Parameter 9",
@@ -13177,7 +13206,7 @@
                 "showWhenDataModelInvalid": "Hide",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "495 462 50 36",
+                "bounds": "777 462 50 36",
                 "additionalInvalidatingHandles": ["IndexedEnabling/1/2/Parameter 9"]
               }
             },
@@ -13189,8 +13218,8 @@
                 "type": "Button",
                 "data": {
                   "version": 2,
-                  "onImage": "osc_016_o2_bypass_button_0.png",
-                  "offImage": "osc_016_o2_bypass_button_0.png",
+                  "onImage": "osc_017_o2_bypass_button_0.png",
+                  "offImage": "osc_017_o2_bypass_button_0.png",
                   "buttonId": 1,
                   "numButtonsInGroup": 2,
                   "handleName": "Parameter 10",
@@ -13207,7 +13236,7 @@
                 "showWhenDataModelInvalid": "Hide",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "685 462 50 36",
+                "bounds": "967 462 50 36",
                 "additionalInvalidatingHandles": ["IndexedEnabling/0/2/Parameter 10"]
               }
             },
@@ -13219,8 +13248,8 @@
                 "type": "Button",
                 "data": {
                   "version": 2,
-                  "onImage": "osc_016_o2_bypass_button_1.png",
-                  "offImage": "osc_016_o2_bypass_button_1.png",
+                  "onImage": "osc_017_o2_bypass_button_1.png",
+                  "offImage": "osc_017_o2_bypass_button_1.png",
                   "buttonId": 0,
                   "numButtonsInGroup": 2,
                   "handleName": "Parameter 10",
@@ -13237,7 +13266,7 @@
                 "showWhenDataModelInvalid": "Hide",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "685 462 50 36",
+                "bounds": "967 462 50 36",
                 "additionalInvalidatingHandles": ["IndexedEnabling/1/2/Parameter 10"]
               }
             }
@@ -17652,8 +17681,8 @@
               "version": 2,
               "componentData": {
                 "version": 1,
-                "name": "glide_rate",
-                "type": "voice knob 0 glide_rate",
+                "name": "spread",
+                "type": "voice knob 0 spread",
                 "data": {
                   "version": 1,
                   "handleName": "Data"
@@ -17664,7 +17693,7 @@
                 "map": [
                   {
                     "key": "Data",
-                    "value": "Parameter 114"
+                    "value": "Parameter 137"
                   }
                 ]
               },
@@ -17768,8 +17797,8 @@
               "version": 2,
               "componentData": {
                 "version": 1,
-                "name": "spread",
-                "type": "voice knob 4 spread",
+                "name": "glide_rate",
+                "type": "voice knob 4 glide_rate",
                 "data": {
                   "version": 1,
                   "handleName": "Data"
@@ -17780,7 +17809,7 @@
                 "map": [
                   {
                     "key": "Data",
-                    "value": "Parameter 137"
+                    "value": "Parameter 114"
                   }
                 ]
               },
@@ -17964,7 +17993,7 @@
                 "showWhenDataModelInvalid": "Show",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "794 446 132 101"
+                "bounds": "834 446 132 101"
               }
             },
             {
@@ -17993,36 +18022,7 @@
                 "showWhenDataModelInvalid": "Show",
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
-                "bounds": "944 446 132 101"
-              }
-            },
-            {
-              "version": 2,
-              "componentData": {
-                "version": 1,
-                "name": "split_point",
-                "type": "voice knob 20 split_point",
-                "data": {
-                  "version": 1,
-                  "handleName": "Data"
-                }
-              },
-              "handle remapping": {
-                "version": 1,
-                "map": [
-                  {
-                    "key": "Data",
-                    "value": "Parameter 136"
-                  }
-                ]
-              },
-              "bounds": {
-                "version": 1,
-                "acceptsHWFocus": "Yes",
-                "showWhenDataModelInvalid": "Show",
-                "whenVisible": "Always",
-                "boundsType": "Absolute",
-                "bounds": "1094 446 132 101"
+                "bounds": "1034 446 132 101"
               }
             },
             {
