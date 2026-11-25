@@ -1122,6 +1122,16 @@ void Panel::build()
                    armDest = armLfoDest = false;
                },
                [this] { return page == P_PROGRAM; });
+        /* over the display: the program before, the next one (through the factory's and yours, round) */
+        auto step = [this](int d) {
+            return [this, d] {
+                int n = proc.getNumPrograms();
+                if (n > 0)
+                    gotoProgram((proc.getCurrentProgram() + d + n) % n);
+            };
+        };
+        button(722, 33, step(-1), [] { return false; });
+        button(810, 33, step(1), [] { return false; });
         auto *o = add<Oled>(*this);
         o->setBounds(Rectangle<float>(666, 60, 200, 118).toNearestInt());
         oledView = o;
@@ -1195,7 +1205,7 @@ void Panel::build()
         knob(FXX[2], R2, P_REV_DAMP);
         knob(FXX[3], R2, P_REV_PREDELAY);
         knob(FXX[4], R2, P_REV_DECAY);
-        knob(FXX[5], R2 - 8, P_REV_TONE);
+        knob(FXX[5], R2, P_REV_TONE);
     }
     /* OSCILLATORS */
     {
@@ -1442,6 +1452,7 @@ void Panel::paintBackground(juce::Graphics &g, float sc)
     /* SETTINGS, MEMORY: the display's frame and its corners' names */
     title(630, 36, "SETTINGS");
     title(904, 36, "MEMORY");
+    small(766, 33, "<  preset  >", 10.0f);
     underB(620, 96, "global");
     underB(620, 168, "program");
     underB(912, 96, "compare");
@@ -1501,9 +1512,9 @@ void Panel::paintBackground(juce::Graphics &g, float sc)
     under(FXX[2], R2, "DAMPING");
     under(FXX[3], R2, "PREDELAY");
     under(FXX[4], R2, "DECAY");
-    under(FXX[5], R2 - 8, "TONE");
-    small(FXX[5] - 31.0f, R2 + 18.0f, "lpf", 9.0f);
-    small(FXX[5] + 31.0f, R2 + 18.0f, "hpf", 9.0f);
+    under(FXX[5], R2, "TONE");
+    small(FXX[5] - 31.0f, R2 + 26.0f, "lpf", 9.0f);
+    small(FXX[5] + 31.0f, R2 + 26.0f, "hpf", 9.0f);
 
     /* the plates */
     const float py0 = 296.0f, py1 = 546.0f;
