@@ -2,6 +2,7 @@
  * Copyright (C) 2026 swtdr34mz (FAKE5) */
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "SyxImport.h"
 
 using namespace f5;
 
@@ -203,14 +204,17 @@ bool Fake5Processor::programFromXml(const juce::XmlElement &x, Program &p)
 void Fake5Processor::loadUserPrograms()
 {
     userPrograms.clear();
+    userFiles.clear();
     auto files = programFolder().findChildFiles(juce::File::findFiles, false, "*.fake5");
     files.sort();
     for (auto &f : files)
         if (auto xml = juce::XmlDocument::parse(f))
             if (xml->hasTagName("FAKE5PROGRAM")) {
                 Program p;
-                if (programFromXml(*xml, p))
+                if (programFromXml(*xml, p)) {
                     userPrograms.push_back(p);
+                    userFiles.push_back(f);
+                }
             }
 }
 
@@ -236,6 +240,39 @@ int Fake5Processor::writeProgram(const juce::String &name)
             return program;
         }
     return -1;
+}
+
+int Fake5Processor::importSyx(const juce::File &syx)
+{
+    juce::MemoryBlock mb;
+    if (!syx.loadFileAsData(mb))
+        return -1;
+    auto progs = importTake5Syx((const uint8_t *)mb.getData(), mb.getSize());
+    if (progs.empty())
+        return -1;
+    auto folder = programFolder();
+    folder.createDirectory();
+    auto stem = juce::File::createLegalFileName(syx.getFileNameWithoutExtension()).substring(0, 40);
+    int n = 0;
+    juce::File first;
+    for (auto &p : progs) {
+        juce::XmlElement xml("FAKE5PROGRAM");
+        programToXml(p, xml);
+        auto file = folder.getChildFile(stem + " " + juce::String(n + 1).paddedLeft('0', 3) + " " +
+                                        juce::File::createLegalFileName(juce::String(p.name)) + ".fake5");
+        if (xml.writeTo(file)) {
+            if (!n)
+                first = file;
+            n++;
+        }
+    }
+    loadUserPrograms();
+    importedFirst = -1;
+    for (size_t i = 0; i < userFiles.size(); i++)
+        if (userFiles[i] == first)
+            importedFirst = NFACTORY + (int)i;
+    updateHostDisplay(ChangeDetails().withProgramChanged(true));
+    return n > 0 ? n : -1;
 }
 
 /* ------------------------------------------------------------------------------- the block --- */

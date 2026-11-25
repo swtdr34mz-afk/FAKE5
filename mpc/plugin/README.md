@@ -27,7 +27,7 @@ Sechs Seiten auf den Funktionstasten; manche haben eine zweite Hälfte: **die Ta
 
 | Taste | Was drauf ist |
 | --- | --- |
-| **OSC** | Oszillatoren (Octave, Pitch, Shape, Sync 2>1) und Mixer (Osc 1, Sub, Osc 2, FM 2>1, Noise) · nochmal: Glide, Unison, Vintage, Key Follow, Osc 2 Bypass |
+| **OSC** | Oszillatoren (Octave, Pitch, Shape, Sync 2>1) und Mixer (Osc 1, Sub, Osc 2, FM 2>1, Noise, Vintage, Overdrive, Voice Spread) · nochmal: Glide, Unison, Vintage, Key Follow, Osc 2 Bypass |
 | **FILTER** | Filter (Cutoff, Resonance, Drive, Key) und Env 1 · nochmal: Env 2, Env Routing, Repeat, Aux-Ziel |
 | **LFO** | LFO 1 (global) und LFO 2 (pro Stimme): Frequenz, Menge, Form, Sync, Ziel, Reset, Slew |
 | **MOD** | die Modulations-Slots 1-8 · nochmal: 9-16 (Quelle, Menge, Ziel) |

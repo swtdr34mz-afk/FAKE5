@@ -247,7 +247,7 @@ int main(int argc, char **argv)
     std::printf("  %s by %s, %d parameters, %d programs\n", p.str(effGetEffectName).c_str(), p.str(effGetVendorString).c_str(),
                 p.e->numParams, p.e->numPrograms);
     check(p.str(effGetEffectName) == "FAKE5" && p.str(effGetVendorString) == "swtdr34mz", "names as in plugin.json");
-    check(p.e->numParams == 140, "140 parameters (their order permanent)");
+    check(p.e->numParams == 141, "141 parameters (their order permanent)");
 
     p.d(effSetSampleRate, 0, 0, nullptr, 44100.0f);
     p.d(effSetBlockSize, 0, 512);
@@ -271,7 +271,7 @@ int main(int argc, char **argv)
         char b[64] = {};
         pn &= p.d(effGetProgramNameIndexed, i, 0, b) == 1 && b[0] && std::strlen(b) <= 24;
     }
-    check(pn && p.e->numPrograms == 49, "49 programs, each named");
+    check(pn && p.e->numPrograms == 64, "64 programs, each named");
     prepare(p, 512);
 
     const int LEN = 44100 * 5;
@@ -293,7 +293,7 @@ int main(int argc, char **argv)
         if (pr == 0)
             keep = s;
     }
-    check(allok, "all 49 programs sound, finite, under 2.0, in blocks of 32 to 512");
+    check(allok, "all 64 programs sound, finite, under 2.0, in blocks of 32 to 512");
     if (argc > 2)
         wav(argv[2], keep);
 
@@ -318,7 +318,7 @@ int main(int argc, char **argv)
 
     /* the poly sequencer: the program's own sequence plays on PLAY, on the MPC's tempo; and stops */
     {
-        p.d(effSetProgram, 0, 38);       /* (Crystal Sequence) */
+        p.d(effSetProgram, 0, 57);       /* (Sequence One) */
         render(p, 4410, {}, {256});
         int play = param(p, "Seq Play");
         p.e->setParameter(p.e, play, 1.0f);
@@ -331,7 +331,7 @@ int main(int argc, char **argv)
 
     /* state: the parameters and the sequences saved and restored */
     {
-        p.d(effSetProgram, 0, 38);       /* (Crystal Sequence) */
+        p.d(effSetProgram, 0, 57);       /* (Sequence One) */
         render(p, 4410, {}, {256});
         void *chunk = nullptr;
         VstIntPtr sz = p.d(effGetChunk, 0, 0, &chunk);
@@ -373,7 +373,7 @@ int main(int argc, char **argv)
         e.push_back({44100 * 8, 0xB0, 64, 0});
         p.d(effSetProgram, 0, 48);
         for (int q = 0; q < 300; q++)
-            p.e->setParameter(p.e, 1 + (int)(rnd() % 138), (float)(rnd() % 1000) / 999.0f);
+            p.e->setParameter(p.e, 1 + (int)(rnd() % 139), (float)(rnd() % 1000) / 999.0f);
         auto st = render(p, 44100 * 9, e, {256, 33, 512});
         check(finite(st) && peak(st) < 6.0, "a storm of parameters and MIDI: finite and bounded");
         p.d(effSetProgram, 0, 48);

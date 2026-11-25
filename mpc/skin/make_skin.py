@@ -21,7 +21,7 @@ import os
 import shutil
 import sys
 
-# The MPC plugin's parameters (mpc/plugin/src/Fake5Mpc.cpp): 0 VOLUME, then the program's 136 (dsp/Params.h's order,
+# The MPC plugin's parameters (mpc/plugin/src/Fake5Mpc.cpp): 0 VOLUME, then the program's 137 (dsp/Params.h's order,
 # by their VST ids), then VOICES, QUALITY, HOLD.
 PARAM_IDS = """o1_oct o1_pitch o1_shape sync o2_oct o2_pitch o2_shape o1_key o2_key o2_bypass
 o1_level sub o2_level fm noise cutoff reso drive keyamt e1_del
@@ -36,8 +36,8 @@ mod14_amt mod14_dst mod15_src mod15_amt mod15_dst mod16_src mod16_amt mod16_dst 
 fx_time fx_mix fx_misc fx_sync rev_on rev_mix rev_damp rev_predelay rev_decay rev_tone
 vintage overdrive glide glide_rate glide_mode o1_glide o2_glide unison uni_voices uni_detune
 uni_keymode uni_retrig bpm divide arp_on arp_mode arp_oct arp_repeat arp_relatch seq_play
-pgm_vol pb_up pb_down split1 split2 split_point""".split()
-assert len(PARAM_IDS) == 136
+pgm_vol pb_up pb_down split1 split2 split_point spread""".split()
+assert len(PARAM_IDS) == 137
 NP = len(PARAM_IDS)
 GLOBAL = {"vol": 0, "voices": 1 + NP, "quality": 2 + NP, "hold": 3 + NP}
 NPARAMS = 4 + NP
@@ -56,7 +56,7 @@ PAGES = [
     ("OSC", [("OSC", [["o1_oct", "o1_pitch", "o1_shape", "o1_level"],
                       ["o2_oct", "o2_pitch", "o2_shape", "o2_level"],
                       ["sub", "noise", "vintage", "overdrive"],
-                      (["drive", "pgm_vol"], False)]),
+                      (["drive", "pgm_vol", "spread"], False)]),
              ("OSC 2", [["glide_rate", "o1_glide", "o2_glide", "glide_mode"],
                         (["pb_up", "pb_down", "split_point"], False),
                         ["uni_voices", "uni_detune", "uni_keymode"]])]),

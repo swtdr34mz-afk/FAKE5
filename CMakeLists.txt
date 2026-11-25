@@ -67,7 +67,8 @@ target_sources(Fake5 PRIVATE
     src/ui/Look.cpp
     dsp/Engine.cpp
     dsp/Params.cpp
-    dsp/Presets.cpp)
+    dsp/Presets.cpp
+    dsp/SyxImport.cpp)
 
 target_include_directories(Fake5 PRIVATE dsp src)
 
@@ -90,7 +91,7 @@ option(FAKE5_SNAPSHOT "build Fake5Shot, the editor's picture" OFF)
 if(FAKE5_SNAPSHOT)
     juce_add_console_app(Fake5Shot PRODUCT_NAME "Fake5Shot")
     target_sources(Fake5Shot PRIVATE tools/snapshot.cpp src/PluginProcessor.cpp src/PluginEditor.cpp src/ui/Look.cpp
-        dsp/Engine.cpp dsp/Params.cpp dsp/Presets.cpp)
+        dsp/Engine.cpp dsp/Params.cpp dsp/Presets.cpp dsp/SyxImport.cpp)
     target_include_directories(Fake5Shot PRIVATE dsp src)
     target_compile_definitions(Fake5Shot PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_STANDALONE_APPLICATION=1
         JucePlugin_Build_Standalone=0)

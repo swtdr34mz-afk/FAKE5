@@ -6,6 +6,10 @@
  * three ENV ROUTINGs, FM, 5 and 10 voices, the CPU. A failure exits non-zero. */
 #include "Engine.h"
 #include "Presets.h"
+#include "SyxImport.h"
+#include <cstdlib>
+#include <fstream>
+#include <iterator>
 #include <chrono>
 #include <cmath>
 #include <cstdio>
@@ -54,29 +58,42 @@ static void chord(Engine &e, bool on)
         on ? e.noteOn(n, 0.8f) : e.noteOff(n);
 }
 
-int main()
+int main(int argc, char **argv)
 {
-    std::printf("%d factory programs\n", NFACTORY);
-    /* every factory program, three rates */
+    /* the programs: the factory's, and any Take 5 .syx files named (LOAD SYX's reading, on its owner's sounds) */
+    std::vector<Program> progs(FACTORY, FACTORY + NFACTORY);
+    for (int a = 1; a < argc; a++) {
+        std::ifstream f(argv[a], std::ios::binary);
+        std::vector<uint8_t> b((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+        auto im = importTake5Syx(b.data(), b.size());
+        std::printf("%s: %d programs\n", argv[a], (int)im.size());
+        CHECK(!im.empty(), "%s: no programs", argv[a]);
+        progs.insert(progs.end(), im.begin(), im.end());
+    }
+    const int NP = (int)progs.size();
+    const Program *PR = progs.data();
+    std::printf("%d factory programs, %d in all\n", NFACTORY, NP);
+    /* every program, three rates */
     const double rates[3] = {44100.0, 48000.0, 96000.0};
     for (double sr : rates)
-        for (int p = 0; p < NFACTORY; p++) {
+        for (int p = 0; p < NP; p++) {
             Engine e;
             e.prepare(sr);
-            e.setProgram(FACTORY[p]);
+            e.setProgram(PR[p]);
             e.host(false, 0.0, 120.0, false);
-            if (FACTORY[p].seq.length)
+            if (PR[p].seq.length)
                 e.seqPlay(true);
             chord(e, true);
             Stats a = run(e, (int)(sr * 2.0));
             chord(e, false);
             e.seqPlay(false);
             Stats b = run(e, (int)(sr * 1.0));
-            CHECK(!a.nan && !b.nan, "%s @%g: NaN", FACTORY[p].name, sr);
-            CHECK(a.peak < 2.5f, "%s @%g: peak %.2f", FACTORY[p].name, sr, a.peak);
-            CHECK(a.rms > 0.01f, "%s @%g: too quiet (rms %.4f)", FACTORY[p].name, sr, a.rms);
+            CHECK(!a.nan && !b.nan, "%s @%g: NaN", PR[p].name, sr);
+            /* (a Take 5's own program may be meant quiet, or for the mod wheel: only FAKE5's must sound) */
+            CHECK(a.peak < (p < NFACTORY ? 2.5f : 4.0f), "%s @%g: peak %.2f", PR[p].name, sr, a.peak);
+            CHECK(p >= NFACTORY || a.rms > 0.01f, "%s @%g: too quiet (rms %.4f)", PR[p].name, sr, a.rms);
             if (sr == 44100.0)
-                std::printf("  %2d %-18s peak %.2f rms %.3f\n", p, FACTORY[p].name, a.peak, a.rms);
+                std::printf("  %2d %-18s peak %.2f rms %.3f\n", p, PR[p].name, a.peak, a.rms);
         }
     /* every effect, the reverb and the overdrive at the top, resonance at the top */
     for (int fx = 0; fx < NFXTYPE; fx++)

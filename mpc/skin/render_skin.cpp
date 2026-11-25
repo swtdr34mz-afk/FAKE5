@@ -144,8 +144,7 @@ std::vector<Screen> screens()
         b.K(800, B1, "overdrive", "OVERDRIVE");
         b.K(620, B2, "drive", "FILTER DRIVE");
         b.K(800, B2, "pgm_vol", "PROGRAM VOL");
-        b.note(1060, B1 - 10, "FM 2>1: OSC 2's level");
-        b.note(1060, B1 + 14, "is the FM's depth");
+        b.K(980, B1, "spread", "VOICE SPREAD");
         b.note(1060, B2 - 10, "SHAPE: sine, saw,");
         b.note(1060, B2 + 14, "square, narrowing pulse");
         ps.push_back(b.s);

@@ -122,6 +122,9 @@ private:
         float pvel = 0.0f, pdet = 0.0f;
         bool pend = false;
         float spread = 0.0f;
+        int idx = 0;
+        float hb[64] = {};                       /* VOICE SPREAD's delay on the far side */
+        uint32_t hw = 0;
         float pink[3] = {}, lastY = 0.0f, lastO2 = 0.0f, lastN = 0.0f;
         float au[3][3] = {};                     /* audio-rate amounts: [osc 2, noise, filter out][cutoff, osc 1 fine, osc 1 shape] */
     };
@@ -168,6 +171,7 @@ private:
     float gdst[NMODDST] = {};
     float lastOut = 0.0f, meterLvl = 0.0f;
     float dcL = 0, dcR = 0, dcxL = 0, dcxR = 0, dcK = 0.999f;
+    float warmL = 0, warmR = 0, warmK = 0.01f;   /* the output stage's low warmth */
     int uniN = 1;
     Overdrive od;
     Effect fx;

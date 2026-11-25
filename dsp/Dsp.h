@@ -130,9 +130,9 @@ struct BlRing {
 
 /* ----------------------------------------------------------- the waveforms --- */
 /* The Take 5's SHAPE, one knob from the sine through the sawtooth to the pulse (0..1):
- *   0 .. 0.5     the sine into the sawtooth
- *   0.5 .. 0.6   the sawtooth into the square
- *   0.6 .. 1     the pulse narrowing from the square to a needle (at the end it all but vanishes, as the manual says)
+ *   0 .. 1/3     the sine into the sawtooth (the Take 5's programs keep the sawtooth at a third: 84 of 254)
+ *   1/3 .. 2/3   the sawtooth into the square (at two thirds: 169 of 254)
+ *   2/3 .. 1     the pulse narrowing from the square to a needle (at the end it all but vanishes, as the manual says)
  * As pieces: the value at a phase, and its corners (a jump in value) */
 struct Wave {
     float wSin = 0, wSaw = 1, wPul = 0, pw = 0.5f, dc = 0;
@@ -141,18 +141,18 @@ struct Wave {
         s = clampf(s, 0.0f, 1.0f);
         wSin = wSaw = wPul = 0.0f;
         pw = 0.5f;
-        if (s < 0.5f) {
-            float t = s * 2.0f;
+        if (s < 1.0f / 3.0f) {
+            float t = s * 3.0f;
             wSin = 1.0f - t;
             wSaw = t;
-        } else if (s < 0.6f) {
-            float t = (s - 0.5f) * 10.0f;
+        } else if (s < 2.0f / 3.0f) {
+            float t = (s - 1.0f / 3.0f) * 3.0f;
             wSaw = 1.0f - t;
             wPul = t * 0.9f;                         /* (a square as loud as the saw beside it) */
         } else {
-            float t = (s - 0.6f) * 2.5f;
+            float t = (s - 2.0f / 3.0f) * 3.0f;
             wPul = 0.9f;
-            pw = 0.5f - 0.48f * t * (0.6f + 0.4f * t);
+            pw = 0.5f - 0.495f * t * (0.6f + 0.4f * t);
         }
         dc = 2.0f * pw - 1.0f;
     }

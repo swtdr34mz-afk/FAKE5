@@ -138,4 +138,5 @@ static const char *const SHORT[] = {
     "Bend Down",
     "Split -1Oct",
     "Split -2Oct",
-    "Split Point"};
+    "Split Point",
+    "Voice Spread"};

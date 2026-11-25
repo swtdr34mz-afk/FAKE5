@@ -64,6 +64,10 @@ namespace
 const float U_DET[MAXV] = {0.0f, -1.0f, 1.0f, -0.5f, 0.5f, -0.75f, 0.75f, -0.25f, 0.25f, -0.9f};
 /* VOICE SPREAD: each voice's own value (-1..1), every other voice the other side */
 const float SPREAD[MAXV] = {-1.0f, 1.0f, -0.5f, 0.5f, 0.0f, -0.75f, 0.75f, -0.25f, 0.25f, 0.1f};
+/* VOICE SPREAD (as PROPHET 67's): each voice's place in the field (SPREAD above), a little detune of its own (cents
+ * at full) and a colour (the cutoff, semitones at full); the side away from it hears it a fraction of a ms late */
+const float S_DET[MAXV] = {-3.0f, 3.5f, -1.5f, 1.2f, 0.4f, -2.5f, 2.2f, -0.8f, 1.8f, -0.4f};
+const float S_COL[MAXV] = {0.35f, -0.45f, 0.2f, -0.15f, 0.0f, 0.5f, -0.3f, 0.1f, -0.25f, 0.05f};
 /* a synced LFO's cycle in beats (LFOSYNC_NAME's order) */
 const float LFO_BEATS[16] = {16, 8, 4, 3, 2, 1.5f, 4.0f / 3.0f, 1, 0.75f, 2.0f / 3.0f, 0.5f, 0.375f, 1.0f / 3.0f,
                              0.25f, 1.0f / 6.0f, 0.125f};
@@ -115,6 +119,7 @@ Engine::Engine()
     for (int i = 0; i < MAXV; i++) {
         V[i].seed = 0x1234567u + 7919u * (uint32_t)i;
         V[i].spread = SPREAD[i];
+        V[i].idx = i;
         for (float &t : V[i].vt)                 /* VINTAGE: each voice's own, for good */
             t = rndF(s);
     }
@@ -127,16 +132,20 @@ void Engine::prepare(double sampleRate)
     for (auto &v : V) {
         uint32_t s = v.seed;
         float sp = v.spread, vt[4];
+        int ix = v.idx;
         std::memcpy(vt, v.vt, sizeof vt);
         v = Voice();
         v.seed = s;
         v.spread = sp;
+        v.idx = ix;
         std::memcpy(v.vt, vt, sizeof vt);
     }
     od.prepare(sr);
     fx.prepare(sr);
     plate.prepare(sr);
     dcK = 1.0f - 2.0f * PI * 8.0f / sr;
+    warmK = 1.0f - std::exp(-2.0f * PI * 120.0f / sr);
+    warmL = warmR = 0.0f;
     dcL = dcR = dcxL = dcxR = 0.0f;
     for (float &c : ctl)
         c = 0.0f;
@@ -988,7 +997,7 @@ void Engine::voiceChunk(Voice &v, float *Lo, float *Ro)
 
     /* VINTAGE: each voice's own tuning, and a slow wander */
     float vint = clampf((float)P[P_VINTAGE] + d[MD_VINTAGE], 0.0f, 127.0f) / 127.0f;
-    if (vint > 0.0f) {
+    {                                            /* (the wander runs always: even calibrated, a VCO is never still) */
         if (--v.drn <= 0) {
             v.dt1 = rndF(v.seed);
             v.dt2 = rndF(v.seed);
@@ -998,7 +1007,9 @@ void Engine::voiceChunk(Voice &v, float *Lo, float *Ro)
         v.dr1 += (v.dt1 - v.dr1) * kd;
         v.dr2 += (v.dt2 - v.dr2) * kd;
     }
-    float c1 = vint * (v.vt[0] * 9.0f + v.dr1 * 5.0f + v.rnd * 2.0f), c2 = vint * (v.vt[1] * 9.0f + v.dr2 * 5.0f);
+    const float spr = clampf((float)P[P_SPREAD], 0.0f, 127.0f) / 127.0f;
+    float c1 = vint * (v.vt[0] * 9.0f + v.dr1 * 5.0f + v.rnd * 2.0f) + 0.6f * v.dr1 + spr * S_DET[v.idx],
+          c2 = vint * (v.vt[1] * 9.0f + v.dr2 * 5.0f) + 0.6f * v.dr2 + spr * S_DET[v.idx] * 0.8f;
     /* glide */
     if (v.gr1 > 0.0f)
         v.p1 = v.p1 < v.t1 ? minf(v.p1 + v.gr1 * dt, v.t1) : maxf(v.p1 - v.gr1 * dt, v.t1);
@@ -1038,7 +1049,8 @@ void Engine::voiceChunk(Voice &v, float *Lo, float *Ro)
     if ((routing == ER_FILTER_AMP && P[P_E1_VEL]) || (routing != ER_FILTER_AMP && P[P_E2_VEL]))
         famt *= 0.12f + 0.88f * v.vel;
     float cutU = (float)P[P_CUTOFF] + d[MD_CUTOFF] * (1023.0f / 127.0f);
-    float oct0 = cutU * (10.3f / 1023.0f) + ((float)P[P_KEYAMT] / 127.0f) * (v.p1 - 60.0f) / 12.0f + vint * v.vt[2] * 0.22f;
+    float oct0 = cutU * (10.3f / 1023.0f) + ((float)P[P_KEYAMT] / 127.0f) * (v.p1 - 60.0f) / 12.0f + vint * v.vt[2] * 0.22f +
+                 spr * S_COL[v.idx] * (1.0f / 12.0f);
     float envOct = famt / 127.0f * 9.0f;
     float reso = clampf((float)P[P_RESO] + d[MD_RESO], 0.0f, 127.0f) / 127.0f;
     float drv = clampf((float)P[P_DRIVE] + d[MD_DRIVE], 0.0f, 127.0f) / 127.0f;
@@ -1049,11 +1061,12 @@ void Engine::voiceChunk(Voice &v, float *Lo, float *Ro)
         if (P[P_E2_VEL])
             ampAmt *= 0.18f + 0.82f * v.vel;
     }
-    /* PROGRAM VOLUME: 100 as made, 0.4 dB a step (127: +10.8 dB, 0: off) */
-    float pgm = P[P_PGM_VOL] <= 0 ? 0.0f : VOICE_GAIN * std::exp2((float)(P[P_PGM_VOL] - 100) * (0.4f / 6.0206f));
+    /* PROGRAM VOLUME: as the Take 5's, an amplifier's gain (100 as made, 127 +2.7 dB, 50 -7.8 dB, 0 off) */
+    float pgm = P[P_PGM_VOL] <= 0 ? 0.0f : VOICE_GAIN * std::pow((float)P[P_PGM_VOL] * 0.01f, 1.3f);
     if ((v.key == K_UNI || (v.key >= K_ARP && P[P_UNISON])) && uniN > 1)
         pgm *= 1.0f / std::sqrt((float)uniN);    /* (a stack as loud as a fat note, not N notes) */
-    float pan = clampf(d[MD_PAN] / 127.0f, -1.0f, 1.0f);
+    float pan = clampf(d[MD_PAN] / 127.0f + v.spread * spr * (0.6f + 0.4f * spr), -1.0f, 1.0f);
+    const float haas = std::fabs(v.spread) * spr * 0.00036f * sr;   /* (up to 0.36 ms) */
     /* the mixer */
     float l1 = clampf((float)P[P_O1_LEVEL] + d[MD_OSC1_LEVEL], 0.0f, 160.0f) / 127.0f;
     float l2 = clampf((float)P[P_O2_LEVEL] + d[MD_OSC2_LEVEL], 0.0f, 160.0f) / 127.0f;
@@ -1104,7 +1117,7 @@ void Engine::voiceChunk(Voice &v, float *Lo, float *Ro)
     auto f4 = [&v](float x, float g, float k) {
         float fb = 0.5f * (v.f[3] + v.ffb);
         v.ffb = v.f[3];
-        float u = sat(x - 4.0f * k * fb);
+        float u = sat(x - 4.0f * k * fb + 0.06f) - 0.0597f;   /* (a little offset: the chip's even harmonics) */
         v.f[0] += g * ota(u - v.f[0]);
         v.f[1] += g * ota(v.f[0] - v.f[1]);
         v.f[2] += g * ota(v.f[1] - v.f[2]);
@@ -1179,7 +1192,7 @@ void Engine::voiceChunk(Voice &v, float *Lo, float *Ro)
         float hz = minf(20.0f * fexp2(clampf(oct, -1.5f, 10.6f)), wmax);
         float g = 1.0f - fexp2(-wk * hz * 1.4427f * 1.06f);
         float k = cur[SM_RES] * 1.24f;
-        float dg = 1.0f + 5.0f * cur[SM_DRV] * std::sqrt(cur[SM_DRV]);
+        float dg = 1.0f + 5.0f * cur[SM_DRV] * std::sqrt(maxf(cur[SM_DRV], 0.0f));
         float fmI = cur[SM_FM];
         float sub = 0.0f, o2 = 0.0f, yos[4];
         for (int q = 0; q < os; q++) {
@@ -1196,8 +1209,8 @@ void Engine::voiceChunk(Voice &v, float *Lo, float *Ro)
             }
             sub = v.subR.out(v.flip);
             float x = cur[SM_G1] * o1 + cur[SM_G2] * o2 + cur[SM_GS] * sub + (cur[SM_GN] + 2e-5f) * nz;
-            float y = f4(x * dg, g, k);
-            yos[q] = y * (1.0f + 0.3f * k) / (1.0f + 0.55f * cur[SM_DRV]) + cur[SM_GB] * o2;
+            float y = f4(x * dg * 1.35f, g, k);  /* (the mixer runs hot into the filter, as on the Take 5) */
+            yos[q] = y * (1.0f + 0.3f * k) / (1.25f + 0.6f * cur[SM_DRV]) + cur[SM_GB] * o2;
         }
         float y;
         if (os == 4)
@@ -1210,11 +1223,27 @@ void Engine::voiceChunk(Voice &v, float *Lo, float *Ro)
         v.lastY = y;
         float amp = clampf(cur[SM_AMP] * ae, 0.0f, 1.2f);
         amax = maxf(amax, amp);
-        float out = y * amp * cur[SM_PGM];
+        /* the VCA: round at the top, as an analogue one driven by a hot filter */
+        float out = softT(y * 0.9f) * (1.0f / 0.9f) * amp * cur[SM_PGM];
         float p0 = cur[SM_PAN];
-        float gl = minf(1.0f, 1.0f - p0), gr = minf(1.0f, 1.0f + p0);
-        Lo[s] += out * gl;
-        Ro[s] += out * gr;
+        float th = (p0 + 1.0f) * (0.25f * PI);
+        float gl = std::cos(th) * 1.41421f, gr = std::sin(th) * 1.41421f;
+        v.hb[v.hw & 63u] = out;
+        float late = out;
+        if (haas > 0.01f) {
+            float hd = minf(haas, 60.0f);
+            uint32_t hi = (uint32_t)hd;
+            float hf = hd - (float)hi, h0 = v.hb[(v.hw - hi) & 63u];
+            late = h0 + hf * (v.hb[(v.hw - hi - 1u) & 63u] - h0);
+        }
+        v.hw++;
+        if (v.spread < 0.0f) {                   /* (left of centre: the right hears it later) */
+            Lo[s] += out * gl;
+            Ro[s] += late * gr;
+        } else {
+            Lo[s] += late * gl;
+            Ro[s] += out * gr;
+        }
     }
     v.amp = amax;
     /* finished: its amplifier's envelope at its end, its key let go */
@@ -1315,6 +1344,15 @@ void Engine::chunk()
     }
     dcL = flushDn(dcL);
     dcR = flushDn(dcR);
+    /* the output stage: a little weight under 120 Hz, and its top rounded as an analogue line stage's */
+    for (int i = 0; i < CH; i++) {
+        warmL += (outL[i] - warmL) * warmK;
+        warmR += (outR[i] - warmR) * warmK;
+        outL[i] = softT((outL[i] + 0.22f * warmL) * 0.8f) * 1.25f;
+        outR[i] = softT((outR[i] + 0.22f * warmR) * 0.8f) * 1.25f;
+    }
+    warmL = flushDn(warmL);
+    warmR = flushDn(warmR);
     /* OVERDRIVE, EFFECT 1, the REVERB */
     od.process(outL, outR, CH, ((float)P[P_OVERDRIVE] + gdst[MD_OVERDRIVE]) / 127.0f);
     fx.set(P[P_FX_ON] != 0, P[P_FX_TYPE], (float)P[P_FX_TIME] + gdst[MD_FX_TIME], (float)P[P_FX_MIX] + gdst[MD_FX_MIX],

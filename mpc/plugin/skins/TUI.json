@@ -1617,6 +1617,108 @@
           }
         },
         {
+          "key": "osc knob 19 spread",
+          "value": {
+            "version": 2,
+            "actions": [
+              {
+                "version": 1,
+                "onAction": "Mouse Down",
+                "handler": "Q-Link",
+                "handleName": "Data",
+                "additionalData": ""
+              },
+              {
+                "version": 1,
+                "onAction": "Double Click",
+                "handler": "Show Overlay",
+                "handleName": "Data",
+                "additionalData": "knob overlay"
+              },
+              {
+                "version": 1,
+                "onAction": "Enter Pressed",
+                "handler": "Show Overlay",
+                "handleName": "Data",
+                "additionalData": "knob overlay"
+              }
+            ],
+            "backgroundData": {
+              "version": 1,
+              "focussed": {
+                "version": 1,
+                "colour": "0",
+                "image": ""
+              },
+              "unfocussed": {
+                "version": 1,
+                "colour": "0",
+                "image": ""
+              }
+            },
+            "ignoreMousePresses": false,
+            "disableCoarseDataWheel": false,
+            "componentsData": [
+              {
+                "version": 2,
+                "componentData": {
+                  "version": 1,
+                  "name": "knob",
+                  "type": "Knob",
+                  "data": {
+                    "version": 3,
+                    "knobType": "FilmStrip",
+                    "filmStrip": "osc_019_spread_knob.png",
+                    "numFrames": 119,
+                    "invert": false,
+                    "dragOrientation": "Vertical",
+                    "handleName": "Data"
+                  }
+                },
+                "handle remapping": {
+                  "version": 1,
+                  "map": []
+                },
+                "bounds": {
+                  "version": 1,
+                  "acceptsHWFocus": "No",
+                  "showWhenDataModelInvalid": "Show",
+                  "whenVisible": "Always",
+                  "boundsType": "Absolute",
+                  "bounds": "25 0 82 82"
+                }
+              },
+              {
+                "version": 2,
+                "componentData": {
+                  "version": 1,
+                  "name": "focus",
+                  "type": "Focus",
+                  "data": {
+                    "version": 1,
+                    "backgroundColour": "19ffffff",
+                    "outlineColour": "ffe81f40",
+                    "backgroundInset": 1.0,
+                    "outlineThickness": 1.0
+                  }
+                },
+                "handle remapping": {
+                  "version": 1,
+                  "map": []
+                },
+                "bounds": {
+                  "version": 1,
+                  "acceptsHWFocus": "No",
+                  "showWhenDataModelInvalid": "Show",
+                  "whenVisible": "WhenFocussed",
+                  "boundsType": "Absolute",
+                  "bounds": "0 0 132 103"
+                }
+              }
+            ]
+          }
+        },
+        {
           "key": "osc2 knob 1 glide_rate",
           "value": {
             "version": 2,
@@ -12186,15 +12288,15 @@
         "value": ["Off", "On"]
       },
       {
-        "key": "Parameter 137",
+        "key": "Parameter 138",
         "value": ["5 Voices", "10 Voices"]
       },
       {
-        "key": "Parameter 138",
+        "key": "Parameter 139",
         "value": ["ECO", "HIGH"]
       },
       {
-        "key": "Parameter 139",
+        "key": "Parameter 140",
         "value": ["Off", "On"]
       }
     ],
@@ -12957,6 +13059,35 @@
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
                 "bounds": "734 455 132 103"
+              }
+            },
+            {
+              "version": 2,
+              "componentData": {
+                "version": 1,
+                "name": "spread",
+                "type": "osc knob 19 spread",
+                "data": {
+                  "version": 1,
+                  "handleName": "Data"
+                }
+              },
+              "handle remapping": {
+                "version": 1,
+                "map": [
+                  {
+                    "key": "Data",
+                    "value": "Parameter 137"
+                  }
+                ]
+              },
+              "bounds": {
+                "version": 1,
+                "acceptsHWFocus": "Yes",
+                "showWhenDataModelInvalid": "Show",
+                "whenVisible": "Always",
+                "boundsType": "Absolute",
+                "bounds": "914 331 132 103"
               }
             }
           ]
@@ -18344,7 +18475,7 @@
                   "offImage": "play_005_hold_button_0.png",
                   "buttonId": 1,
                   "numButtonsInGroup": 2,
-                  "handleName": "Parameter 139",
+                  "handleName": "Parameter 140",
                   "gestureBehaviour": "Instant"
                 }
               },
@@ -18359,7 +18490,7 @@
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
                 "bounds": "54 181 52 38",
-                "additionalInvalidatingHandles": ["IndexedEnabling/0/2/Parameter 139"]
+                "additionalInvalidatingHandles": ["IndexedEnabling/0/2/Parameter 140"]
               }
             },
             {
@@ -18374,7 +18505,7 @@
                   "offImage": "play_005_hold_button_1.png",
                   "buttonId": 0,
                   "numButtonsInGroup": 2,
-                  "handleName": "Parameter 139",
+                  "handleName": "Parameter 140",
                   "gestureBehaviour": "Instant"
                 }
               },
@@ -18389,7 +18520,7 @@
                 "whenVisible": "Always",
                 "boundsType": "Absolute",
                 "bounds": "54 181 52 38",
-                "additionalInvalidatingHandles": ["IndexedEnabling/1/2/Parameter 139"]
+                "additionalInvalidatingHandles": ["IndexedEnabling/1/2/Parameter 140"]
               }
             },
             {
@@ -18553,7 +18684,7 @@
                   "offImage": "play_009_voices_led0_off.png",
                   "buttonId": 0,
                   "numButtonsInGroup": 2,
-                  "handleName": "Parameter 137",
+                  "handleName": "Parameter 138",
                   "gestureBehaviour": "Instant"
                 }
               },
@@ -18582,7 +18713,7 @@
                   "offImage": "play_009_voices_led1_off.png",
                   "buttonId": 1,
                   "numButtonsInGroup": 2,
-                  "handleName": "Parameter 137",
+                  "handleName": "Parameter 138",
                   "gestureBehaviour": "Instant"
                 }
               },
@@ -18611,7 +18742,7 @@
                   "offImage": "play_010_quality_led0_off.png",
                   "buttonId": 0,
                   "numButtonsInGroup": 2,
-                  "handleName": "Parameter 138",
+                  "handleName": "Parameter 139",
                   "gestureBehaviour": "Instant"
                 }
               },
@@ -18640,7 +18771,7 @@
                   "offImage": "play_010_quality_led1_off.png",
                   "buttonId": 1,
                   "numButtonsInGroup": 2,
-                  "handleName": "Parameter 138",
+                  "handleName": "Parameter 139",
                   "gestureBehaviour": "Instant"
                 }
               },

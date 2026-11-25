@@ -43,6 +43,8 @@ public:
     void entryMenu(juce::Rectangle<int> screen);
     void programMenu(juce::Rectangle<int> screen);
     void writeDialog();
+    void loadSyx();
+    static constexpr int LOAD_ITEM = 100000;
     void message(const juce::String &);          /* a line on the display for a moment */
     juce::String valueText(int p, int v) const;
     int bankOf(int program) const;               /* (banks of 16: factory 1.., your programs 1..) */
@@ -73,6 +75,7 @@ private:
     float backgroundScale = 0.0f;
     std::vector<double> taps;
     juce::Component::SafePointer<juce::AlertWindow> dialog;
+    std::unique_ptr<juce::FileChooser> chooser;
     template <class T, class... A> T *add(A &&...a);
     friend class Oled;
 };

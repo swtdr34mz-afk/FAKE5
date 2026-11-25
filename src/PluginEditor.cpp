@@ -770,6 +770,16 @@ std::vector<Panel::Entry> Panel::entries() const
         }
         {
             Entry e;
+            e.label = "Load Take 5 SysEx";
+            e.lo = 0;
+            e.hi = 1;
+            e.get = [] { return 0; };
+            e.set = [self](int) { self->loadSyx(); };
+            e.text = [](int) { return juce::String("turn VALUE"); };
+            es.push_back(e);
+        }
+        {
+            Entry e;
             e.label = "Basic Program";
             e.lo = 0;
             e.hi = 1;
@@ -894,10 +904,39 @@ void Panel::programMenu(juce::Rectangle<int> screen)
                   i == proc.getCurrentProgram());
     if (proc.userPrograms.empty())
         m.addItem(-1, "(WRITE keeps the sound as a program of your own)", false, false);
+    m.addSeparator();
+    m.addItem(LOAD_ITEM, "Load Take 5 SysEx (.syx) ...");
     juce::Component::SafePointer<Panel> self(this);
     m.showMenuAsync(juce::PopupMenu::Options().withTargetScreenArea(screen).withMinimumWidth(260), [self](int r) {
-        if (self && r > 0)
+        if (self && r == LOAD_ITEM)
+            self->loadSyx();
+        else if (self && r > 0)
             self->gotoProgram(r - 1);
+    });
+}
+
+/* LOAD SYX: a Take 5's own sounds (its factory sets, the owner's programs) from a .syx file into YOUR PROGRAMS */
+void Panel::loadSyx()
+{
+    chooser = std::make_unique<juce::FileChooser>("Load a Take 5 SysEx file (its programs become yours)",
+                                                  juce::File::getSpecialLocation(juce::File::userHomeDirectory), "*.syx;*.SYX");
+    juce::Component::SafePointer<Panel> self(this);
+    chooser->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles, [self](const juce::FileChooser &fc) {
+        if (!self)
+            return;
+        auto f = fc.getResult();
+        if (f == juce::File())
+            return;
+        int n = self->proc.importSyx(f);
+        if (n <= 0) {
+            self->message("No Take 5 programs in it");
+            return;
+        }
+        if (self->proc.importedFirst >= 0) {
+            self->gotoProgram(self->proc.importedFirst);
+            self->bank = self->bankOf(self->proc.importedFirst);
+        }
+        self->message("Loaded " + juce::String(n) + (n == 1 ? " program" : " programs"));
     });
 }
 
@@ -931,6 +970,7 @@ constexpr float R1 = 108, R2 = 222;              /* the top's two rows */
 constexpr float O1 = 352, O2 = 458;              /* the plates' two rows */
 constexpr float BOT = 588;                       /* the bottom row's buttons */
 constexpr float LX = 96;                         /* the left column */
+constexpr float LV1 = 332, LV2 = 419, LV3 = 506;  /* its lower three: VINTAGE, VOICE SPREAD, GLIDE */
 constexpr float ENVX[5] = {1236, 1336, 1436, 1536, 1636};
 constexpr float ENV_VEL = 1730;
 constexpr float FXX[6] = {1366, 1444, 1522, 1600, 1678, 1758};
@@ -985,13 +1025,14 @@ void Panel::build()
     auto isOn = [this](int p) { return [this, p] { return proc.value(p) != 0; }; };
     auto glob = [this](const char *id) { return proc.apvts.getParameter(id); };
 
-    /* the left column: VOLUME, OVERDRIVE; VINTAGE, GLIDE */
+    /* the left column: VOLUME, OVERDRIVE; VINTAGE, VOICE SPREAD, GLIDE */
     {
         auto *k = add<Knob>(*this, [glob] { return glob("volume"); }, [this](juce::RangedAudioParameter *q) { touchGlobal(q); });
         place(k, LX, R1 - 8, KD, KD);
         knob(LX, R2, P_OVERDRIVE);
-        knob(LX, O1, P_VINTAGE);
-        knob(LX, O2, P_GLIDE_RATE);
+        knob(LX, LV1, P_VINTAGE);
+        knob(LX, LV2, P_SPREAD);
+        knob(LX, LV3, P_GLIDE_RATE);
     }
     /* LFO 1: MONO | LFO 2: POLY */
     {
@@ -1096,6 +1137,7 @@ void Panel::build()
                    writeDialog();
                },
                [] { return false; });
+        button(912, 236, [this] { loadSyx(); }, [] { return false; });   /* LOAD SYX: a Take 5's own sounds */
     }
     /* CLOCK */
     enc(978, R1 - 4, P_BPM);
@@ -1375,8 +1417,9 @@ void Panel::paintBackground(juce::Graphics &g, float sc)
     /* the left column */
     under(LX, R1 - 8, "VOLUME");
     under(LX, R2, "OVERDRIVE");
-    under(LX, O1, "VINTAGE");
-    under(LX, O2, "GLIDE");
+    under(LX, LV1, "VINTAGE");
+    under(LX, LV2, "VOICE SPREAD");
+    under(LX, LV3, "GLIDE");
     underB(LX, BOT, "GLIDE");
     /* LFOs */
     title(310, 36, "LFO 1: MONO  |  LFO 2: POLY");
@@ -1403,6 +1446,7 @@ void Panel::paintBackground(juce::Graphics &g, float sc)
     underB(620, 168, "program");
     underB(912, 96, "compare");
     underB(912, 168, "write");
+    underB(912, 236, "load syx");
     {
         auto o = Rectangle<float>(666, 60, 200, 118).expanded(5.0f);
         g.setColour(Colour(0xff111214));

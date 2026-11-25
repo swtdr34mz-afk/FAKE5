@@ -46,20 +46,25 @@ Die Plugins laufen auf Apple Silicon und Intel-Macs (eine Datei für beide).
 - **LFO 1 (mono)** and **LFO 2 (poly)**: five shapes, clock sync, slew, key reset.
 - **Modulation**: 16 slots of 19 sources and 57 destinations (the Take 5's lists), including audio-rate
   modulation from osc 2, noise and the filter output.
+- **VOICE SPREAD**: its own knob (the Take 5 patches Voice Spread to Panning in the matrix): each voice its place in
+  the stereo field, a hair of detune and colour of its own, the far side a fraction of a millisecond late.
 - **VINTAGE** (per-voice tuning and envelope spread, drift), **GLIDE** (polyphonic, per-oscillator), **UNISON** with
   CHORD memory, **LOW SPLIT**, **TRANSPOSE**.
 - **EFFECT** with 12 types (Delay Stereo, BBD, Tape 1 / 2, Chorus, Flanger, Phaser, HP Filter, Distortion, Ring Mod,
-  Rotating Speaker, Lo-Fi) and a **plate REVERB** (MIX, DAMPING, PREDELAY, DECAY up to 30 s, TONE).
+  Rotating Speaker, Lo-Fi) and a **plate REVERB** (MIX, DAMPING, PREDELAY, DECAY up to 12 s, TONE).
 - **Arpeggiator** (modes, octaves, repeats, relatch) and a **64-step sequencer** (up to 10 notes a step, rests, ties,
   transpose while playing).
 - **HOST SYNC**: clock, synced LFOs and delays follow the DAW.
-- 48 factory programs plus the Basic Program; WRITE keeps your own (Documents/FAKE5/Programs).
+- 64 factory programs of its own plus the Basic Program; WRITE keeps your own (Documents/FAKE5/Programs).
+- **LOAD SYX**: a Take 5's own sounds from a .syx file (its factory sets, your programs) become your programs. FAKE5
+  ships none of Sequential's sounds; it reads the files you have.
 - **QUALITY** (GLOBAL page): HIGH runs the oscillators and filter at 4x the sample rate, ECO at 2x (less CPU).
 
 ## The panel
 
 The panel is the Take 5 desktop module's (no keys: play it from a MIDI keyboard or the DAW). **program** and
-**global** open the menus on the display, **select** picks a line, **value** sets it. In MOD: press **SRC ASSIGN**
+**global** open the menus on the display, **select** picks a line, **value** sets it. **load syx** (under write)
+reads a Take 5 SysEx file. In MOD: press **SRC ASSIGN**
 and turn **select** for the source, then **DEST ASSIGN** and touch the knob you want to modulate.
 
 ## Building

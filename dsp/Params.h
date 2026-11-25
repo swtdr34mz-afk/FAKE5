@@ -68,6 +68,8 @@ enum Param {
     P_BPM, P_DIVIDE, P_ARP_ON, P_ARP_MODE, P_ARP_OCT, P_ARP_REPEAT, P_ARP_RELATCH, P_SEQ_PLAY,
     /* the rest of the program menu, LOW SPLIT */
     P_PGM_VOL, P_PB_UP, P_PB_DOWN, P_SPLIT_1, P_SPLIT_2, P_SPLIT_POINT,
+    /* VOICE SPREAD (FAKE5's own: the Take 5 spreads its voices through the matrix) */
+    P_SPREAD,
     NPARAM
 };
 

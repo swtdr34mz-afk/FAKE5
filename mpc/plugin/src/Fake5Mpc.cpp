@@ -12,10 +12,10 @@
 //
 // Parameters (their ids never change; new ones only at the end):
 //   0           VOLUME (the host nudges parameter 0 on every prepare: harmless here, it ramps)
-//   1..136      the program's 136 parameters, in dsp/Params.h's order ("Cutoff", ...)
-//   137         VOICES (5 or 10)
-//   138         QUALITY (ECO: 2x; HIGH: 4x)
-//   139         HOLD
+//   1..137      the program's 137 parameters, in dsp/Params.h's order ("Cutoff", ...)
+//   138         VOICES (5 or 10)
+//   139         QUALITY (ECO: 2x; HIGH: 4x)
+//   140         HOLD
 // The program's sequence and chord memory ride in the state (saveExtraState); a program change brings its own.
 //
 // MIDI in: notes and velocity, pitch bend, channel and poly pressure, CC 1 mod wheel, CC 2 breath, CC 4 foot,
@@ -40,7 +40,7 @@ enum {
     kHold,
     kNumParams
 };
-static_assert(kNumParams == 140, "the parameters' order is permanent");
+static_assert(kNumParams == 141, "the parameters' order is permanent");
 static_assert(sizeof(SHORT) / sizeof(SHORT[0]) == NPARAM, "a short name for each parameter");
 
 class Fake5Mpc : public mpc::Plugin

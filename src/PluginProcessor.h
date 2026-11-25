@@ -69,6 +69,10 @@ public:
     static juce::File programFolder();
     void loadUserPrograms();
     int writeProgram(const juce::String &name);
+    /* LOAD SYX: a Take 5's .syx into the user's programs (one file each, in the file's order); how many, -1: none */
+    int importSyx(const juce::File &syx);
+    int importedFirst = -1;                      /* (the first of them, as a program number) */
+    std::vector<juce::File> userFiles;
     f5::Program currentProgram() const;          /* the sound as it is now, whole */
     bool compare = false;                        /* COMPARE: the stored program heard, the edit kept aside */
     void setCompare(bool on);

@@ -70,11 +70,11 @@ const bool MODDST_POLY[NMODDST] = {
 const ParamDef PARAMS[NPARAM] = {
     S("o1_oct", "Osc 1 Octave", -2, 2, 0),
     {"o1_pitch", "Osc 1 Fine Freq", -700, 700, 0, K_CENTS, nullptr},
-    N("o1_shape", "Osc 1 Shape", 0, 127, 64),
+    N("o1_shape", "Osc 1 Shape", 0, 127, 42),
     B("sync", "Sync 2>1", 0),
     S("o2_oct", "Osc 2 Octave", -2, 2, 0),
     {"o2_pitch", "Osc 2 Fine Freq", -700, 700, 0, K_CENTS, nullptr},
-    N("o2_shape", "Osc 2 Shape", 0, 127, 64),
+    N("o2_shape", "Osc 2 Shape", 0, 127, 42),
     B("o1_key", "Osc 1 Key Follow", 1),
     B("o2_key", "Osc 2 Key Follow", 1),
     B("o2_bypass", "Osc 2 Filter Bypass", 0),
@@ -146,6 +146,7 @@ const ParamDef PARAMS[NPARAM] = {
     B("split1", "Low Split -1 Oct", 0),
     B("split2", "Low Split -2 Oct", 0),
     {"split_point", "Low Split Point", 0, 127, 60, K_NOTE, nullptr},
+    N("spread", "Voice Spread", 0, 127, 0),
 };
 
 static const char *const NOTE12[12] = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
