@@ -1,0 +1,13 @@
+{
+  "id": "fake5",
+  "name": "FAKE5",
+  "author": "swtdr34mz",
+  "repo": "swtdr34mz-afk/FAKE5",
+  "kind": "instrument",
+  "license": "MPL-2.0",
+  "summary": "A polysynth in the manner of the Sequential Take 5: two oscillators per voice with continuous shape (sine, saw, square, narrowing pulse), sub and noise, sync and analog-style linear FM 2>1, a Prophet-5-style 4-pole low-pass with drive, two DADSR envelopes with env routing, a global and a per-voice LFO, sixteen mod slots, vintage, overdrive, twelve effects and a lush plate reverb, arp and 64-step sequencer, unison with chord memory, 5 or 10 voices. ECO and HIGH quality. Panel-style touch pages.",
+  "style": "polysynth",
+  "tags": ["analog-modelling", "polyphonic", "subtractive", "fm", "arpeggiator", "sequencer"],
+  "asset_pattern": "FAKE5-*-mpc-armv7.zip",
+  "screenshot": "https://raw.githubusercontent.com/swtdr34mz-afk/FAKE5/v1.0.0/mpc/catalog/screenshot.png"
+}

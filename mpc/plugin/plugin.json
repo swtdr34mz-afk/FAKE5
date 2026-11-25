@@ -1,0 +1,17 @@
+{
+  "name": "FAKE5",
+  "manufacturer": "swtdr34mz",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "instrument",
+  "uid": "Fak5",
+  "numInputs": 0,
+  "numOutputs": 2,
+  "category": "Synth",
+  "file32": "VST/fake5-arm32.so",
+  "file64": "VST/fake5-arm64.so",
+  "description": "FAKE5: a 5- or 10-voice poly in the style of the Sequential Take 5. Two oscillators with continuous shape, sub, noise, sync and FM 2>1, a Prophet-5-style 4-pole low-pass with drive, two DADSR envelopes with env routing, two LFOs, sixteen mod slots, vintage, overdrive, twelve effects and a plate reverb, arp and 64-step sequencer. The same engine as the FAKE5 VST3.",
+  "author": "swtdr34mz",
+  "url": "https://github.com/swtdr34mz-afk/FAKE5",
+  "license": "MPL-2.0"
+}
