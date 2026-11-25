@@ -7,12 +7,13 @@
  * VINTAGE, unison, glide) is drawn in the same hand. A choice is a row of buttons, one a value (the arp's modes, the
  * glide's), or a knob with a little display over it (the effect's type) or a display alone (the LFOs' destinations):
  *
- *   OSC      OSCILLATORS, MIXER; under them LOW SPLIT and its SPLIT POINT, the keys and osc 2's bypass
+ *   OSC      VOICE SPREAD, VINTAGE; OSCILLATORS, MIXER; under them LOW SPLIT and its SPLIT POINT (its note on a
+ *            display), the keys and osc 2's bypass
  *   FILTER   FILTER, ENVELOPES (+ key amount, the envelopes' delays, env 1's aux destination, env repeat)
  *   LFO      LFO 1: GLOBAL | LFO 2: PER VOICE  /  MOD 1-8  /  MOD 9-16 (the matrix on the display)
  *   FX       EFFECT, REVERB
  *   ARP      CLOCK; ARPEGGIATOR (on, relatch, hold, octaves, repeats); MODE
- *   VOICE    GLIDE RATE, VINTAGE, VOLUME, OVERDRIVE, VOICE SPREAD, PROGRAM VOL; unison's and glide's settings; the
+ *   VOICE    VOLUME, OVERDRIVE, GLIDE RATE, PROGRAM VOL; unison's and glide's settings; the
  *            VST's GLIDE, UNISON, HOLD; VOICES, QUALITY; the bend
  *
  * Each screen is drawn at the MPC's 1280 x 628 and cut up: its background, and every control at every value it can
@@ -234,7 +235,10 @@ std::vector<Screen> screens()
     {
         Builder b;
         b.s.name = "OSC";
-        b.vst({152, 287, 676, 266}, 1.6f, 99, 8);
+        /* left of the panel: the keyboard's VOICE SPREAD and VINTAGE */
+        b.K(75, 112, "spread", "VOICE SPREAD", 84.0f);
+        b.K(75, 282, "vintage", "VINTAGE", 84.0f);
+        b.vst({152, 287, 676, 266}, 1.6f, 150, 8);
         for (int o = 0; o < 2; o++) {
             float y = o ? VO2 : VO1;
             const char *oct = o ? "o2_oct" : "o1_oct";
@@ -256,14 +260,15 @@ std::vector<Screen> screens()
         b.vK(774, VO2, "noise");
         /* the bottom row, in the middle: LOW SPLIT (the VST's own) and its SPLIT POINT; the program menu's keys and
          * OSC 2's way round the filter */
-        b.vst({596, 566, 108, 72}, 1.7f, 198, 436, 6.0f);
+        b.vst({596, 566, 108, 72}, 1.7f, 249, 436, 6.0f);
         b.vB(612, 592, "split2");
         b.vB(676, 592, "split1");
         const float ky = b.at(0, 592).y;
-        b.K(462, ky + 2, "split_point", "SPLIT POINT");
-        b.B(612, ky, "o1_key", "OSC 1 KEY FOLLOW");
-        b.B(802, ky, "o2_key", "OSC 2 KEY FOLLOW");
-        b.B(992, ky, "o2_bypass", "OSC 2 FILTER BYPASS");
+        b.K(513, ky - 12, "split_point", "SPLIT POINT", 70.0f);
+        b.box({468, 536, 90, 32}, "split_point");   /* (the note it splits at) */
+        b.B(663, ky, "o1_key", "OSC 1 KEY FOLLOW");
+        b.B(853, ky, "o2_key", "OSC 2 KEY FOLLOW");
+        b.B(1043, ky, "o2_bypass", "OSC 2 FILTER BYPASS");
         ps.push_back(b.s);
     }
     /* ---------------------------------------------------------------------- FILTER: FILTER, ENVELOPES (the VST's) */
@@ -393,11 +398,9 @@ std::vector<Screen> screens()
     {
         Builder b;
         b.s.name = "VOICE";
-        const char *kn[6][2] = {{"spread", "VOICE SPREAD"}, {"vintage", "VINTAGE"}, {"vol", "VOLUME"},
-                                {"overdrive", "OVERDRIVE"}, {"glide_rate", "GLIDE RATE"}, {"pgm_vol", "PROGRAM VOL"}};
-        for (int i = 0; i < 6; i++)
-            b.K(140.0f + 200.0f * (float)i, 78, kn[i][0], kn[i][1], 84.0f);
-        b.s.vlines.push_back({440.0f, {30.0f, 150.0f}});
+        const char *kn[4][2] = {{"vol", "VOLUME"}, {"overdrive", "OVERDRIVE"}, {"glide_rate", "GLIDE RATE"}, {"pgm_vol", "PROGRAM VOL"}};
+        for (int i = 0; i < 4; i++)
+            b.K(200.0f + 293.0f * (float)i, 78, kn[i][0], kn[i][1], 84.0f);
         /* the program menu's: unison | glide */
         b.sec(14, 168, 1266, 380, "PROGRAM MENU: UNISON, GLIDE");
         b.K(84, 262, "uni_voices", "UNI VOICES");

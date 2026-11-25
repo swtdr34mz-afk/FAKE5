@@ -27,12 +27,12 @@ Sechs Seiten auf den Funktionstasten; manche haben eine zweite Hälfte: **die Ta
 
 | Taste | Was drauf ist |
 | --- | --- |
-| **OSC** | OSCILLATORS und MIXER wie am Take 5 (Octave mit seinen LEDs, Pitch, Shape, Sync 2>1, Osc 1, Sub, Osc 2, FM 2>1, Noise) · darunter, mittig: LOW SPLIT mit SPLIT POINT, Key Follow 1 und 2, Osc 2 Bypass |
+| **OSC** | links Voice Spread und Vintage · OSCILLATORS und MIXER wie am Take 5 (Octave mit seinen LEDs, Pitch, Shape, Sync 2>1, Osc 1, Sub, Osc 2, FM 2>1, Noise) · darunter: LOW SPLIT mit SPLIT POINT (die Note steht darunter, ab Werk C3), Key Follow 1 und 2, Osc 2 Bypass |
 | **FILTER** | FILTER und ENVELOPES wie am Take 5 (Cutoff, Resonance, Drive, beide Hüllkurven, Env Routing) · darunter: Key Amount, Delays, Aux-Ziel (mit Anzeige), Envelope Repeat (ein Taster je Einstellung) |
 | **LFO** | LFO 1: GLOBAL und LFO 2: PER VOICE nebeneinander: Frequency, Amount, Shape (ein Regler, die Formen drumherum), Clk Sync, Key Reset, Slew, das Ziel auf einer Anzeige · nochmal: MOD 1-8 auf dem Display · nochmal: MOD 9-16 (antippen und ziehen, doppelt antippen für die Liste) |
 | **FX** | EFFECT und REVERB wie am Take 5; über TYPE steht der gewählte Effekt |
 | **ARP** | CLOCK (BPM, Clock Divide, mit Anzeigen) · ARPEGGIATOR (On, Relatch, Hold, Oktaven, Wiederholungen) · MODE: ein Taster je Modus |
-| **VOICE** | Voice Spread, Vintage · Volume, Overdrive, Glide Rate, Program Vol · Unison (Stimmen, Detune, Key Mode als Taster, Retrigger) und Glide (Osc 1/2 Glide, Modus als Taster) · Glide, Unison, Hold · 5/10 Stimmen, Qualität · Bend |
+| **VOICE** | Volume, Overdrive, Glide Rate, Program Vol · Unison (Stimmen, Detune, Key Mode als Taster, Retrigger) und Glide (Osc 1/2 Glide, Modus als Taster) · Glide, Unison, Hold · 5/10 Stimmen, Qualität · Bend |
 
 Ein Knopf wird mit dem Finger hoch und runter gezogen oder mit seinem Q-Link gedreht; zweimal tippen öffnet den
 großen Regler der MPC (bei einer Auswahl die Liste). Ein Taster schaltet um; in einer Reihe Taster (je einer pro Einstellung) leuchtet der gewählte. Die Q-Links
