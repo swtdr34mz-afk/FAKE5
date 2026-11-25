@@ -27,12 +27,12 @@ Sechs Seiten auf den Funktionstasten; manche haben eine zweite Hälfte: **die Ta
 
 | Taste | Was drauf ist |
 | --- | --- |
-| **OSC** | Oszillatoren (Octave, Pitch, Shape, Sync 2>1) und Mixer (Osc 1, Sub, Osc 2, FM 2>1, Noise, Vintage, Overdrive, Voice Spread) · nochmal: Glide, Unison, Vintage, Key Follow, Osc 2 Bypass |
-| **FILTER** | Filter (Cutoff, Resonance, Drive, Key) und Env 1 · nochmal: Env 2, Env Routing, Repeat, Aux-Ziel |
-| **LFO** | LFO 1 (global) und LFO 2 (pro Stimme): Frequenz, Menge, Form, Sync, Ziel, Reset, Slew |
-| **MOD** | die Modulations-Slots 1-8 · nochmal: 9-16 (Quelle, Menge, Ziel) |
-| **FX** | Effect (Typ, Time, Depth/Mix, Fback/Misc, Clock Sync), Reverb (Mix, Damping, Predelay, Decay, Tone), Overdrive |
-| **PLAY** | Arpeggiator, Clock Divide, Sequencer PLAY, Hold; 5/10 Stimmen, Qualität, Program-Lautstärke, Bend, Low Split |
+| **OSC** | OSCILLATORS und MIXER wie am Take 5 (Octave mit LEDs, Pitch, Shape, Sync 2>1, Osc 1, Sub, Osc 2, FM 2>1, Noise), LOW SPLIT · darunter: Key Follow, Osc 2 Bypass |
+| **FILTER** | FILTER und ENVELOPES wie am Take 5 (Cutoff, Resonance, Drive, beide Hüllkurven, Env Routing) · darunter: Key Amount, Delays, Aux-Ziel, Envelope Repeat |
+| **LFO** | LFO 1: GLOBAL und LFO 2: PER VOICE nebeneinander · nochmal: MOD 1-8 auf dem Display · nochmal: MOD 9-16 (antippen und ziehen, doppelt antippen für die Liste) |
+| **FX** | EFFECT und REVERB wie am Take 5 |
+| **ARP** | CLOCK, ARPEGGIATOR, STEP SEQ wie am Take 5 · rechts: Arp-Mode, Relatch, Hold |
+| **VOICE** | Glide Rate, Vintage, Volume, Overdrive, Voice Spread, Program Vol · Unison- und Glide-Menü · Glide, Unison, Hold · 5/10 Stimmen, Qualität · Bend, Split Point |
 
 Ein Knopf wird mit dem Finger hoch und runter gezogen oder mit seinem Q-Link gedreht; zweimal tippen öffnet den
 großen Regler der MPC (bei einer Auswahl die Liste). Ein Taster schaltet um, eine LED-Liste wählt aus. Die Q-Links

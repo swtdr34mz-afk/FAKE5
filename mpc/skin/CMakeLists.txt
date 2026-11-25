@@ -1,4 +1,4 @@
-# The MPC skin's renderer: the VST3's own art (src/ui/Look.cpp) on the MPC's pages, every control cut out at every
+# The MPC skin's renderer: the VST3's own panel and art (src/PluginEditor.cpp, src/ui/Look.cpp) on the MPC's pages, every control cut out at every
 # value it can take (film strips, button images, LED rows), with a manifest for make_skin.py.
 #   cmake -S mpc/skin -B build-skin -DFAKE5_JUCE_DIR=/path/to/JUCE && cmake --build build-skin
 #   build-skin/fake5_skin_render_artefacts/Release/fake5_skin_render mpc/build/skin-render
@@ -29,10 +29,11 @@ juce_add_binary_data(Fake5SkinData SOURCES
     ${R}/fonts/FiraSans-ExtraBold.ttf
     ${R}/fonts/AnonymousPro-Bold.ttf
     ${R}/res/swtdr34mz-tag.png)
-target_sources(fake5_skin_render PRIVATE render_skin.cpp ${R}/src/ui/Look.cpp ${R}/dsp/Params.cpp)
+target_sources(fake5_skin_render PRIVATE render_skin.cpp ${R}/src/ui/Look.cpp ${R}/src/PluginProcessor.cpp
+    ${R}/src/PluginEditor.cpp ${R}/dsp/Engine.cpp ${R}/dsp/Params.cpp ${R}/dsp/Presets.cpp ${R}/dsp/SyxImport.cpp)
 target_include_directories(fake5_skin_render PRIVATE ${R}/dsp ${R}/src)
 target_compile_definitions(fake5_skin_render PRIVATE
     JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_ALSA=0 JUCE_JACK=0 JUCE_DISPLAY_SPLASH_SCREEN=0 JUCE_REPORT_APP_USAGE=0
     JUCE_USE_XRANDR=0 JUCE_USE_XINERAMA=0 JUCE_USE_XSHM=0 JUCE_USE_XRENDER=0 JUCE_USE_XCURSOR=0
-    JUCE_MODAL_LOOPS_PERMITTED=0)
+    JUCE_MODAL_LOOPS_PERMITTED=0 JUCE_STANDALONE_APPLICATION=1 JucePlugin_Build_Standalone=0)
 target_link_libraries(fake5_skin_render PRIVATE Fake5SkinData juce::juce_audio_utils juce::juce_recommended_config_flags)

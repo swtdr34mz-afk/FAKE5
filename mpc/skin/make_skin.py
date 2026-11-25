@@ -53,38 +53,33 @@ def mpc(pid):
 # The pages (the function keys), each a screen or two (the renderer's names), and each screen's Q-Link groups top down
 # (a group as (ids, False): not framed)
 PAGES = [
-    ("OSC", [("OSC", [["o1_oct", "o1_pitch", "o1_shape", "o1_level"],
-                      ["o2_oct", "o2_pitch", "o2_shape", "o2_level"],
-                      ["sub", "noise", "vintage", "overdrive"],
-                      (["drive", "pgm_vol", "spread"], False)]),
-             ("OSC 2", [["glide_rate", "o1_glide", "o2_glide", "glide_mode"],
-                        (["pb_up", "pb_down", "split_point"], False),
-                        ["uni_voices", "uni_detune", "uni_keymode"]])]),
-    ("FILTER", [("FILTER", [(["reso", "keyamt", "e1_amt"], False),
-                            (["cutoff", "drive"], False),
-                            ["e1_del", "e1_att", "e1_dec", "e1_sus"],
-                            (["e1_rel", "e1_dest"], False)]),
-                ("FILTER 2", [["e2_del", "e2_att", "e2_dec", "e2_sus"],
-                              (["e2_rel", "e2_amt"], False),
-                              (["e1_dest"], False)])]),
-    ("LFO", [("LFO", [["lfo1_freq", "lfo1_amt", "lfo1_dest", "lfo1_slew"],
-                      (["lfo1_shape"], False),
-                      ["lfo2_freq", "lfo2_amt", "lfo2_dest", "lfo2_slew"],
-                      (["lfo2_shape"], False)])]),
-    ("MOD", [("MOD", [(["mod1_amt", "mod2_amt", "mod3_amt", "mod4_amt"], False),
-                      (["mod5_amt", "mod6_amt", "mod7_amt", "mod8_amt"], False),
-                      (["mod1_dst", "mod2_dst", "mod3_dst", "mod4_dst"], False),
-                      (["mod5_dst", "mod6_dst", "mod7_dst", "mod8_dst"], False)]),
-             ("MOD 2", [(["mod9_amt", "mod10_amt", "mod11_amt", "mod12_amt"], False),
-                        (["mod13_amt", "mod14_amt", "mod15_amt", "mod16_amt"], False),
-                        (["mod9_dst", "mod10_dst", "mod11_dst", "mod12_dst"], False),
-                        (["mod13_dst", "mod14_dst", "mod15_dst", "mod16_dst"], False)])]),
-    ("FX", [("FX", [["fx_type", "fx_time", "fx_mix", "fx_misc"],
-                    (["overdrive"], False),
-                    ["rev_mix", "rev_damp", "rev_predelay", "rev_decay"],
+    ("OSC", [("OSC", [(["o1_oct", "o1_pitch", "o1_shape", "o1_level"], False),
+                      (["o2_oct", "o2_pitch", "o2_shape", "o2_level"], False),
+                      (["sub", "noise"], False),
+                      ([], False)])]),
+    ("FILTER", [("FILTER", [(["cutoff", "reso", "drive", "keyamt"], False),
+                            (["e1_att", "e1_dec", "e1_sus", "e1_rel"], False),
+                            (["e2_att", "e2_dec", "e2_sus", "e2_rel"], False),
+                            (["e1_amt", "e2_amt", "e1_del", "e2_del"], False)])]),
+    ("LFO", [("LFO", [(["lfo1_freq", "lfo1_amt", "lfo1_dest", "lfo1_slew"], False),
+                      (["lfo2_freq", "lfo2_amt", "lfo2_dest", "lfo2_slew"], False)]),
+             ("MOD 1-8", [(["mod1_amt", "mod2_amt", "mod3_amt", "mod4_amt"], False),
+                          (["mod5_amt", "mod6_amt", "mod7_amt", "mod8_amt"], False),
+                          (["mod1_dst", "mod2_dst", "mod3_dst", "mod4_dst"], False),
+                          (["mod5_dst", "mod6_dst", "mod7_dst", "mod8_dst"], False)]),
+             ("MOD 9-16", [(["mod9_amt", "mod10_amt", "mod11_amt", "mod12_amt"], False),
+                           (["mod13_amt", "mod14_amt", "mod15_amt", "mod16_amt"], False),
+                           (["mod9_dst", "mod10_dst", "mod11_dst", "mod12_dst"], False),
+                           (["mod13_dst", "mod14_dst", "mod15_dst", "mod16_dst"], False)])]),
+    ("FX", [("FX", [(["fx_type", "fx_time", "fx_mix", "fx_misc"], False),
+                    (["rev_mix", "rev_damp", "rev_predelay", "rev_decay"], False),
                     (["rev_tone"], False)])]),
-    ("PLAY", [("PLAY", [(["arp_mode", "arp_oct", "arp_repeat", "divide"], False),
-                        (["pgm_vol", "vol", "bpm"], False)])]),
+    ("ARP", [("ARP", [(["bpm", "divide", "arp_oct", "arp_repeat"], False),
+                      (["arp_mode"], False)])]),
+    ("VOICE", [("VOICE", [(["glide_rate", "vintage", "vol", "overdrive"], False),
+                          (["spread", "pgm_vol", "uni_voices", "uni_detune"], False),
+                          (["uni_keymode", "o1_glide", "o2_glide", "split_point"], False),
+                          (["pb_up", "pb_down"], False)])]),
 ]
 # Program (Track) mode: the knobs as the MPC's own program knobs, bottom left Q-Link 1
 PROGRAM_QLINKS = ["rev_mix", "fx_mix", "lfo1_amt", "vol",
@@ -227,11 +222,29 @@ def main(argv):
                              ("numButtonsInGroup", c["steps"]), ("handleName", h), ("gestureBehaviour", "Instant"))
                     kids.append(entry(c["id"], "Button", data, bounds(c["rect"], "No", hide, "Hide")))
                 boxes.append((c["id"], c["rect"]))
+            elif c["kind"] == "cell":
+                # a value on the display: the MPC writes it (the parameter's display string, or its name in the list)
+                x, y, w, hh = c["rect"]
+                ov = "menu overlay" if c["names"] else "knob overlay bipolar" if c["bipolar"] else "knob overlay"
+                name = "%s cell %d %s" % (page["name"].lower().replace(" ", ""), i, c["id"])
+                style = O(("version", 1), ("font", O(("version", 1), ("name", "Roboto"), ("style", "Regular"), ("height", 27.0))),
+                          ("colour", "ffaee0ff"),
+                          ("justification", "horizontallyCentred verticallyCentred" if c["centred"] else "left verticallyCentred"),
+                          ("case", "Original"))
+                knob = O(("version", 4), ("knobType", "ValueSlider"), ("textStyle", style), ("dragOrientation", "Vertical"),
+                         ("handleName", "Data"))
+                defs.append((name, component(
+                    [action("Mouse Down", "Q-Link", "Data", ""), action("Double Click", "Show Overlay", "Data", ov),
+                     action("Enter Pressed", "Show Overlay", "Data", ov)],
+                    [entry("value", "Knob", knob, bounds((0, 0, w, hh))),
+                     entry("focus", "Focus", focus, O(("version", 1), ("acceptsHWFocus", "No"), ("showWhenDataModelInvalid", "Show"),
+                                                      ("whenVisible", "WhenFocussed"), ("boundsType", "Absolute"),
+                                                      ("bounds", box((0, 0, w, hh)))))])))
+                kids.append(entry(c["id"], name, O(("version", 1), ("handleName", "Data")), bounds(c["rect"], "Yes"), [("Data", h)]))
+                boxes.append((c["id"], c["rect"]))
             else:
-                if len(c["rows"]) != c["steps"]:
-                    sys.exit("%s: %d LEDs for %d values" % (c["id"], len(c["rows"]), c["steps"]))
                 for k, row in enumerate(c["rows"]):
-                    data = O(("version", 2), ("onImage", use(row["on"])), ("offImage", use(row["off"])), ("buttonId", k),
+                    data = O(("version", 2), ("onImage", use(row["on"])), ("offImage", use(row["off"])), ("buttonId", row.get("value", k)),
                              ("numButtonsInGroup", c["steps"]), ("handleName", h), ("gestureBehaviour", "Instant"))
                     kids.append(entry(c["id"], "Button", data, bounds(row["rect"])))
                     boxes.append((c["id"], row["rect"]))

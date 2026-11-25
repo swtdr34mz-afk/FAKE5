@@ -1616,6 +1616,11 @@ void Panel::paintBackground(juce::Graphics &g, float sc)
         underB(612, BOT + 4, "-2 oct");
         underB(676, BOT + 4, "-1 oct");
         drawLegend(g, "LOW SPLIT", C(644.0f, BOT + 44.0f, 100.0f, 13.0f), 10.0f);
+        /* between its keys, as on the Take 5: both held set the split point */
+        drawLegend(g, "set", C(644.0f, BOT + 4.0f, 20.0f, 11.0f), 8.5f, Justification::centred, col::dim);
+        g.setColour(col::dim.withAlpha(0.8f));
+        g.drawLine(631.0f, BOT + 4.0f, 636.0f, BOT + 4.0f, 1.0f);
+        g.drawLine(652.0f, BOT + 4.0f, 657.0f, BOT + 4.0f, 1.0f);
         g.setColour(col::line);
         g.drawLine(600.0f, BOT + 37.0f, 690.0f, BOT + 37.0f, 1.0f);
         g.drawLine(424.0f, BOT + 37.0f, 552.0f, BOT + 37.0f, 1.0f);
