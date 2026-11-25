@@ -1191,8 +1191,14 @@ void Engine::voiceChunk(Voice &v, float *Lo, float *Ro)
         float oct = cur[SM_CUT] + cur[SM_ENV] * v.e[feI].v + aCut;
         float hz = minf(20.0f * fexp2(clampf(oct, -1.5f, 10.6f)), wmax);
         float g = 1.0f - fexp2(-wk * hz * 1.4427f * 1.06f);
-        float k = cur[SM_RES] * 1.24f;
-        float dg = 1.0f + 5.0f * cur[SM_DRV] * std::sqrt(maxf(cur[SM_DRV], 0.0f));
+        const float drvC = maxf(cur[SM_DRV], 0.0f);
+        float k = cur[SM_RES] * 1.24f * (1.0f + 0.28f * drvC);   /* (driven, the resonance bites harder, not less) */
+        float dg = 1.0f + 7.0f * drvC * std::sqrt(drvC);
+        /* DRIVE: its own stage before the filter (an asymmetric soft clip whose ceiling comes down as it is turned up),
+         * so the harmonics it makes go through the filter while the resonance keeps its headroom in the loop: driven,
+         * the filter growls and squelches rather than choking its own resonance */
+        const float dA = 2.0f - 1.38f * std::sqrt(drvC * std::sqrt(drvC)), dB = 0.6f * dA * drvC, dB0 = dA * softT(dB / dA);
+        const float dInv = 1.0f / dA;
         float fmI = cur[SM_FM];
         float sub = 0.0f, o2 = 0.0f, yos[4];
         for (int q = 0; q < os; q++) {
@@ -1209,8 +1215,9 @@ void Engine::voiceChunk(Voice &v, float *Lo, float *Ro)
             }
             sub = v.subR.out(v.flip);
             float x = cur[SM_G1] * o1 + cur[SM_G2] * o2 + cur[SM_GS] * sub + (cur[SM_GN] + 2e-5f) * nz;
-            float y = f4(x * dg * 1.35f, g, k);  /* (the mixer runs hot into the filter, as on the Take 5) */
-            yos[q] = y * (1.0f + 0.3f * k) / (1.25f + 0.6f * cur[SM_DRV]) + cur[SM_GB] * o2;
+            float pre = dA * softT((x * dg * 1.35f + dB) * dInv) - dB0;   /* (the mixer runs hot, as on the Take 5) */
+            float y = f4(pre, g, k);
+            yos[q] = y * (1.0f + 0.3f * k) * (1.0f / 1.25f) * (1.0f + 0.75f * drvC) + cur[SM_GB] * o2;
         }
         float y;
         if (os == 4)

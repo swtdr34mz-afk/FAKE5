@@ -41,7 +41,8 @@ Die Plugins laufen auf Apple Silicon und Intel-Macs (eine Datei für beide).
 - **5 or 10 voices** (VOICES on the panel).
 - Per voice: **two oscillators** with continuous SHAPE, hard **SYNC 2>1**, per-oscillator key tracking, osc 1
   **sub octave**, pink/white **noise**, **FM 2>1** (linear, through-zero-free, osc 2's level sets the depth),
-  a **4-pole ladder low-pass** with RESONANCE, DRIVE and key tracking, two **DADSR** envelopes with the Take 5's
+  a **4-pole ladder low-pass** with RESONANCE, DRIVE (a stage of its own before the filter: driven, the resonance
+  keeps its bite and growls) and key tracking, two **DADSR** envelopes with the Take 5's
   **ENV ROUTING** (Filter/Amp, Aux/Filter+Amp, Aux/Filter+Gate) and envelope **repeat**.
 - **LFO 1 (mono)** and **LFO 2 (poly)**: five shapes, clock sync, slew, key reset.
 - **Modulation**: 16 slots of 19 sources and 57 destinations (the Take 5's lists), including audio-rate
