@@ -56,6 +56,21 @@ int destOf(int p)
     }
 }
 
+/* ------------------------------------------------------------------------- a right click --- */
+/* a right click on a control: the host's own menu for its parameter (MIDI learn, automation, ...), as the DAW offers
+ * it; the value never changes. True: it was a right click (the control does nothing else with it). */
+static bool hostMenu(juce::Component &c, const juce::MouseEvent &e, juce::RangedAudioParameter *p)
+{
+    if (!e.mods.isPopupMenu())
+        return false;
+    if (p)
+        if (auto *ed = c.findParentComponentOfClass<juce::AudioProcessorEditor>())
+            if (auto *ctx = ed->getHostContext())
+                if (auto menu = ctx->getContextMenuForParameter(p))
+                    menu->showNativeMenu(ed->getMouseXYRelative());
+    return true;
+}
+
 /* ------------------------------------------------------------------------------- a knob --- */
 /* a parameter's knob (target: which, now: the LFO chosen), or an endless encoder (onTurn, or a parameter stepped) */
 class Knob : public juce::Component, public Panel::Live
@@ -106,6 +121,9 @@ public:
     }
     void mouseDown(const juce::MouseEvent &e) override
     {
+        rightClick = hostMenu(*this, e, target ? target() : nullptr);
+        if (rightClick)
+            return;
         startY = e.position.y;
         acc = 0.0f;
         if (!target)
@@ -119,6 +137,8 @@ public:
     }
     void mouseDrag(const juce::MouseEvent &e) override
     {
+        if (rightClick || e.mods.isPopupMenu())   /* (a right drag turns nothing) */
+            return;
         float dy = startY - e.position.y;
         bool fine = e.mods.isShiftDown();
         if (!target || stepped) {
@@ -147,6 +167,10 @@ public:
     }
     void mouseUp(const juce::MouseEvent &) override
     {
+        if (rightClick) {
+            rightClick = false;
+            return;
+        }
         if (target && !stepped)
             if (auto *p = target())
                 p->endChangeGesture();
@@ -172,9 +196,9 @@ public:
             }
         }
     }
-    void mouseDoubleClick(const juce::MouseEvent &) override
+    void mouseDoubleClick(const juce::MouseEvent &e) override
     {
-        if (!target || stepped)
+        if (e.mods.isPopupMenu() || !target || stepped)
             return;
         if (auto *p = target()) {
             p->beginChangeGesture();
@@ -206,6 +230,7 @@ private:
     std::function<void(int)> onTurn;
     KnobKind kind, shownKind, bodyKind;
     float shownPos = -1.0f, startY = 0.0f, acc = 0.0f, bodyScale = 0.0f, startV = 0.0f;
+    bool rightClick = false;
     juce::Image body;
 };
 
@@ -217,6 +242,7 @@ public:
     {
         setRepaintsOnMouseActivity(true);
     }
+    std::function<juce::RangedAudioParameter *()> param;   /* the parameter it sets (none: a function key) */
     void paint(juce::Graphics &g) override
     {
         float sc = g.getInternalContext().getPhysicalPixelScaleFactor();
@@ -249,8 +275,10 @@ public:
             repaint();
         }
     }
-    void mouseDown(const juce::MouseEvent &) override
+    void mouseDown(const juce::MouseEvent &e) override
     {
+        if (hostMenu(*this, e, param ? param() : nullptr))
+            return;
         down = true;
         repaint();
         if (onPress)
@@ -259,6 +287,8 @@ public:
     }
     void mouseUp(const juce::MouseEvent &) override
     {
+        if (!down)
+            return;
         down = false;
         repaint();
     }
@@ -279,6 +309,7 @@ public:
         : pts(std::move(at)), level(std::move(level)), pick(std::move(pick)), shown(pts.size(), -1.0f)
     {
     }
+    std::function<juce::RangedAudioParameter *()> param;   /* the parameter it chooses (none: it only shows) */
     void paint(juce::Graphics &g) override
     {
         for (size_t i = 0; i < pts.size(); i++)
@@ -299,7 +330,7 @@ public:
     }
     void mouseDown(const juce::MouseEvent &e) override
     {
-        if (!pick)
+        if (hostMenu(*this, e, param ? param() : nullptr) || !pick)
             return;
         float best = 1e9f;
         int bi = 0;
@@ -349,7 +380,11 @@ public:
         bool dots[3] = {false, false, last.endsWith(".")};
         drawSevenSeg(g, getLocalBounds().toFloat(), last.upToFirstOccurrenceOf(".", false, false), dots);
     }
-    void mouseDown(const juce::MouseEvent &) override { panel.programMenu(getScreenBounds()); }
+    void mouseDown(const juce::MouseEvent &e) override
+    {
+        if (!e.mods.isPopupMenu())
+            panel.programMenu(getScreenBounds());
+    }
 
 private:
     juce::String text() const
@@ -519,8 +554,11 @@ public:
         if (d)
             panel.valueTurn(d);
     }
-    void mouseDown(const juce::MouseEvent &) override
+    void mouseDown(const juce::MouseEvent &e) override
     {
+        /* a right click: the host's menu for the parameter on show */
+        if (hostMenu(*this, e, panel.shownGlobal ? panel.shownGlobal : panel.shownParam >= 0 ? panel.proc.param(panel.shownParam) : nullptr))
+            return;
         if (panel.page == Panel::P_HOME)
             panel.programMenu(getScreenBounds());
         else if (panel.page != Panel::P_SEQ)
@@ -1043,7 +1081,8 @@ void Panel::build()
                 touch(p);
             };
         };
-        button(196, R1 - 6, lt(LFO_SYNC), [this] { return proc.value(P_LFO1 + lfoSel * LFO_N + LFO_SYNC) != 0; });
+        auto lp = [this](int off) { return [this, off]() -> juce::RangedAudioParameter * { return proc.param(P_LFO1 + lfoSel * LFO_N + off); }; };
+        button(196, R1 - 6, lt(LFO_SYNC), [this] { return proc.value(P_LFO1 + lfoSel * LFO_N + LFO_SYNC) != 0; })->param = lp(LFO_SYNC);
         lknob(280, R1, LFO_FREQ);
         button(360, R1 - 6,
                [this] {
@@ -1051,7 +1090,7 @@ void Panel::build()
                    proc.setValue(p, (proc.value(p) + 1) % NLFOSHAPE);
                    touch(p);
                },
-               [] { return false; });
+               [] { return false; })->param = lp(LFO_SHAPE);
         std::vector<juce::Point<float>> sp;
         for (int i = 0; i < NLFOSHAPE; i++)
             sp.push_back({398.0f, R1 - 42.0f + 17.0f * (float)i});
@@ -1059,7 +1098,7 @@ void Panel::build()
              [this](int i) {
                  proc.setValue(P_LFO1 + lfoSel * LFO_N + LFO_SHAPE, i);
                  touch(P_LFO1 + lfoSel * LFO_N + LFO_SHAPE);
-             });
+             })->param = lp(LFO_SHAPE);
         button(196, R2 - 6,
                [this] {
                    armLfoDest = !armLfoDest;
@@ -1169,14 +1208,14 @@ void Panel::build()
            [this] { return proc.beatLed.load(); });
     /* ARPEGGIATOR */
     {
-        button(1126, R1 - 6, toggle(P_ARP_ON), isOn(P_ARP_ON));
+        button(1126, R1 - 6, toggle(P_ARP_ON), isOn(P_ARP_ON))->param = P(P_ARP_ON);
         enc(1222, R1 - 4, P_ARP_OCT);
         leds({{1182.0f, R1 - 30.0f}, {1182.0f, R1 - 13.0f}, {1182.0f, R1 + 4.0f}}, [this](int i) { return proc.value(P_ARP_OCT) == 3 - i ? 1.0f : 0.0f; },
-             [this](int i) { proc.setValue(P_ARP_OCT, 3 - i); });
+             [this](int i) { proc.setValue(P_ARP_OCT, 3 - i); })->param = P(P_ARP_OCT);
         enc(1140, R2 - 4, P_ARP_MODE);
         enc(1222, R2 - 4, P_ARP_REPEAT);
         leds({{1182.0f, R2 - 30.0f}, {1182.0f, R2 - 13.0f}, {1182.0f, R2 + 4.0f}}, [this](int i) { return proc.value(P_ARP_REPEAT) == 3 - i ? 1.0f : 0.0f; },
-             [this](int i) { proc.setValue(P_ARP_REPEAT, proc.value(P_ARP_REPEAT) == 3 - i ? 0 : 3 - i); });
+             [this](int i) { proc.setValue(P_ARP_REPEAT, proc.value(P_ARP_REPEAT) == 3 - i ? 0 : 3 - i); })->param = P(P_ARP_REPEAT);
     }
     /* STEP SEQ */
     button(1295, R1 - 6,
@@ -1191,16 +1230,16 @@ void Panel::build()
                proc.setValue(P_SEQ_PLAY, proc.value(P_SEQ_PLAY) ? 0 : 1);
                openPage(P_SEQ);
            },
-           isOn(P_SEQ_PLAY));
+           isOn(P_SEQ_PLAY))->param = P(P_SEQ_PLAY);
     /* EFFECT, REVERB */
     {
-        button(FXX[0], R1 - 6, toggle(P_FX_ON), isOn(P_FX_ON));
+        button(FXX[0], R1 - 6, toggle(P_FX_ON), isOn(P_FX_ON))->param = P(P_FX_ON);
         enc(FXX[1], R1 - 4, P_FX_TYPE);
         knob(FXX[2], R1, P_FX_TIME);
         knob(FXX[3], R1, P_FX_MIX);
         knob(FXX[4], R1, P_FX_MISC);
-        button(FXX[5], R1 - 26, toggle(P_FX_SYNC), isOn(P_FX_SYNC));
-        button(FXX[0], R2 - 6, toggle(P_REV_ON), isOn(P_REV_ON));
+        button(FXX[5], R1 - 26, toggle(P_FX_SYNC), isOn(P_FX_SYNC))->param = P(P_FX_SYNC);
+        button(FXX[0], R2 - 6, toggle(P_REV_ON), isOn(P_REV_ON))->param = P(P_REV_ON);
         knob(FXX[1], R2, P_REV_MIX);
         knob(FXX[2], R2, P_REV_DAMP);
         knob(FXX[3], R2, P_REV_PREDELAY);
@@ -1220,15 +1259,15 @@ void Panel::build()
                  [this, oct](int i) {
                      proc.setValue(oct, i - 2);
                      touch(oct);
-                 });
+                 })->param = P(oct);
             knob(382, y, o ? P_O2_PITCH : P_O1_PITCH);
             knob(552, y, o ? P_O2_SHAPE : P_O1_SHAPE);
         }
-        button(470, (O1 + O2) * 0.5f - 6.0f, toggle(P_SYNC), isOn(P_SYNC));
+        button(470, (O1 + O2) * 0.5f - 6.0f, toggle(P_SYNC), isOn(P_SYNC))->param = P(P_SYNC);
     }
     /* MIXER */
     knob(672, O1, P_O1_LEVEL);
-    button(722, O1 + 30, toggle(P_FM), isOn(P_FM));
+    button(722, O1 + 30, toggle(P_FM), isOn(P_FM))->param = P(P_FM);
     knob(774, O1, P_SUB);
     knob(672, O2, P_O2_LEVEL);
     knob(774, O2, P_NOISE);
@@ -1241,30 +1280,30 @@ void Panel::build()
         leds({{1092.0f, 338.0f}, {1092.0f, 355.0f}}, [this](int i) {
             int r = proc.value(P_ENV_ROUTING);
             return (i == 0) == (r == ER_FILTER_AMP) ? 1.0f : 0.0f;
-        });
+        })->param = P(P_ENV_ROUTING);
         leds({{1092.0f, 410.0f}, {1092.0f, 427.0f}, {1092.0f, 444.0f}}, [this](int i) { return proc.value(P_ENV_ROUTING) == i ? 1.0f : 0.0f; },
              [this](int i) {
                  proc.setValue(P_ENV_ROUTING, i);
                  touch(P_ENV_ROUTING);
-             });
+             })->param = P(P_ENV_ROUTING);
         button(1100, 494,
                [this] {
                    proc.setValue(P_ENV_ROUTING, (proc.value(P_ENV_ROUTING) + 1) % NENVROUTING);
                    touch(P_ENV_ROUTING);
                },
-               [] { return false; });
+               [] { return false; })->param = P(P_ENV_ROUTING);
         const int e1[5] = {P_E1_ATT, P_E1_DEC, P_E1_SUS, P_E1_REL, P_E1_AMT}, e2[5] = {P_E2_ATT, P_E2_DEC, P_E2_SUS, P_E2_REL, P_E2_AMT};
         for (int i = 0; i < 5; i++) {
             knob(ENVX[i], O1, e1[i]);
             knob(ENVX[i], O2, e2[i]);
         }
-        button(ENV_VEL, O1 - 6, toggle(P_E1_VEL), isOn(P_E1_VEL));
-        button(ENV_VEL, O2 - 6, toggle(P_E2_VEL), isOn(P_E2_VEL));
+        button(ENV_VEL, O1 - 6, toggle(P_E1_VEL), isOn(P_E1_VEL))->param = P(P_E1_VEL);
+        button(ENV_VEL, O2 - 6, toggle(P_E2_VEL), isOn(P_E2_VEL))->param = P(P_E2_VEL);
     }
     /* the bottom row: GLIDE, UNISON, HOLD, FACTORY; TRANSPOSE, LOW SPLIT; BANK and the display, PROGRAM SELECT,
      * PRESET; VOICES, HOST SYNC */
     {
-        button(LX, BOT, toggle(P_GLIDE), isOn(P_GLIDE));
+        button(LX, BOT, toggle(P_GLIDE), isOn(P_GLIDE))->param = P(P_GLIDE);
         button(184, BOT,
                [this] {
                    if (proc.keysHeld.load() > 0) {   /* keys held: CHORD MEMORY (one key: cleared) */
@@ -1303,15 +1342,15 @@ void Panel::build()
                 touchGlobal(q);
             };
         };
-        button(436, BOT + 4, tp(-1), [] { return false; });
-        button(540, BOT + 4, tp(1), [] { return false; });
+        button(436, BOT + 4, tp(-1), [] { return false; })->param = [glob] { return glob("transpose"); };
+        button(540, BOT + 4, tp(1), [] { return false; })->param = [glob] { return glob("transpose"); };
         std::vector<juce::Point<float>> tpp;
         for (int i = 0; i < 5; i++)
             tpp.push_back({458.0f + 15.0f * (float)i, BOT - 18.0f});
         leds(tpp, [this, glob](int i) {
             auto *q = glob("transpose");
             return (int)std::lround(q->convertFrom0to1(q->getValue())) == i - 2 ? 1.0f : 0.0f;
-        });
+        })->param = [glob] { return glob("transpose"); };
         auto split = [this](int p, int other) {
             return [this, p, other] {
                 bool on = proc.value(p) == 0;
@@ -1321,8 +1360,8 @@ void Panel::build()
                 touch(p);
             };
         };
-        button(612, BOT + 4, split(P_SPLIT_2, P_SPLIT_1), isOn(P_SPLIT_2));
-        button(676, BOT + 4, split(P_SPLIT_1, P_SPLIT_2), isOn(P_SPLIT_1));
+        button(612, BOT + 4, split(P_SPLIT_2, P_SPLIT_1), isOn(P_SPLIT_2))->param = P(P_SPLIT_2);
+        button(676, BOT + 4, split(P_SPLIT_1, P_SPLIT_2), isOn(P_SPLIT_1))->param = P(P_SPLIT_1);
         button(752, BOT - 6,
                [this] {
                    bool fac = proc.getCurrentProgram() < NFACTORY;
@@ -1361,7 +1400,7 @@ void Panel::build()
                    q->endChangeGesture();
                    touchGlobal(q);
                },
-               [] { return false; });
+               [] { return false; })->param = [glob] { return glob("voices"); };
         leds({{1692.0f, BOT - 16.0f}, {1692.0f, BOT + 2.0f}}, [this, glob](int i) { return (glob("voices")->getValue() > 0.5f) == (i == 1) ? 1.0f : 0.0f; },
              [this, glob](int i) {
                  auto *q = glob("voices");
@@ -1369,7 +1408,7 @@ void Panel::build()
                  q->setValueNotifyingHost(i ? 1.0f : 0.0f);
                  q->endChangeGesture();
                  touchGlobal(q);
-             });
+             })->param = [glob] { return glob("voices"); };
         button(1762, BOT - 6,
                [this, glob] {
                    auto *q = glob("host_sync");
@@ -1378,7 +1417,7 @@ void Panel::build()
                    q->endChangeGesture();
                    touchGlobal(q);
                },
-               [glob] { return glob("host_sync")->getValue() > 0.5f; });
+               [glob] { return glob("host_sync")->getValue() > 0.5f; })->param = [glob] { return glob("host_sync"); };
     }
 }
 

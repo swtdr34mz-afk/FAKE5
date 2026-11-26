@@ -68,6 +68,9 @@ The panel is the Take 5 desktop module's (no keys: play it from a MIDI keyboard 
 reads a Take 5 SysEx file. In MOD: press **SRC ASSIGN**
 and turn **select** for the source, then **DEST ASSIGN** and touch the knob you want to modulate.
 
+A **right click** on a knob, a button or a row of LEDs opens the DAW's own menu for that parameter (MIDI learn,
+automation, ...); it never changes the value.
+
 ## Building
 
 ```
