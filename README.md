@@ -52,7 +52,7 @@ Die Plugins laufen auf Apple Silicon und Intel-Macs (eine Datei für beide).
 - **VINTAGE** (per-voice tuning and envelope spread, drift), **GLIDE** (polyphonic, per-oscillator), **UNISON** with
   CHORD memory, **LOW SPLIT**, **TRANSPOSE**.
 - **EFFECT** with 12 types (Delay Stereo, BBD, Tape 1 / 2, Chorus, Flanger, Phaser, HP Filter, Distortion, Ring Mod,
-  Rotating Speaker, Lo-Fi) and a **plate REVERB** (MIX, DAMPING, PREDELAY, DECAY up to 12 s, TONE).
+  Rotating Speaker, Lo-Fi) and a **plate REVERB** (MIX, DAMPING, PREDELAY, DECAY up to half a minute, TONE).
 - **Arpeggiator** (modes, octaves, repeats, relatch) and a **64-step sequencer** (up to 10 notes a step, rests, ties,
   transpose while playing).
 - **HOST SYNC**: clock, synced LFOs and delays follow the DAW.

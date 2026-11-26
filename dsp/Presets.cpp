@@ -83,11 +83,11 @@ std::vector<Def> defs()
                         {P_RESO, 18}, {P_DRIVE, 70}, {P_KEYAMT, 64}, {P_E1_DEC, 74}, {P_E1_SUS, 40}, {P_E1_REL, 72},
                         {P_E1_AMT, 38}, {P_E1_VEL, 1}, {P_E2_ATT, 8}, {P_E2_DEC, 80}, {P_E2_SUS, 110}, {P_E2_REL, 76},
                         {P_FX_ON, 1}, {P_FX_TYPE, FX_CHORUS}, {P_FX_TIME, 12}, {P_FX_MIX, 110}, {P_FX_MISC, 90},
-                        {P_REV_ON, 1}, {P_REV_MIX, 16}, {P_REV_DECAY, 60}, {P_REV_DAMP, 70}, {P_VINTAGE, 46}, {P_SPREAD, 70}});
+                        {P_REV_ON, 1}, {P_REV_MIX, 3}, {P_REV_DECAY, 43}, {P_REV_DAMP, 70}, {P_VINTAGE, 46}, {P_SPREAD, 70}});
     add("Prophet Brass", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SAW}, {P_O2_PITCH, 7}, {P_CUTOFF, 380}, {P_RESO, 10}, {P_DRIVE, 96},
                           {P_KEYAMT, 70}, {P_E1_ATT, 54}, {P_E1_DEC, 74}, {P_E1_SUS, 66}, {P_E1_REL, 66}, {P_E1_AMT, 74},
                           {P_E1_VEL, 1}, {P_E2_ATT, 30}, {P_E2_DEC, 76}, {P_E2_SUS, 116}, {P_E2_REL, 66}, {P_VINTAGE, 58},
-                          {P_REV_ON, 1}, {P_REV_MIX, 14}, {P_REV_DECAY, 56}, {P_SPREAD, 50}},
+                          {P_REV_ON, 1}, {P_REV_MIX, 3}, {P_REV_DECAY, 39}, {P_SPREAD, 50}},
         {WHEEL_VIB, AT_CUT, {MS_VELOCITY, 18, MD_ENV1_AMT}});
     add("Hard Sync Lead", {{P_O1_SHAPE, SAW}, {P_SYNC, 1}, {P_O1_OCT, 1}, {P_O2_SHAPE, SAW}, {P_O2_LEVEL, 0}, {P_CUTOFF, 820},
                            {P_RESO, 12}, {P_DRIVE, 110}, {P_ENV_ROUTING, ER_AUX_FILTERAMP}, {P_E1_DEST, MD_OSC1_FINE},
@@ -101,7 +101,7 @@ std::vector<Def> defs()
                    {P_E1_AMT, 60}, {P_E1_VEL, 1}, {P_E1_DEC, 62}, {P_E1_SUS, 0}, {P_E1_REL, 50}, {P_E2_AMT, 40},
                    {P_E2_VEL, 1}, {P_E2_DEC, 92}, {P_E2_SUS, 0}, {P_E2_REL, 70}, {P_FX_ON, 1}, {P_FX_TYPE, FX_PHASER},
                    {P_FX_TIME, 22}, {P_FX_MIX, 60}, {P_FX_MISC, 40}, {P_VINTAGE, 40}, {P_OVERDRIVE, 18},
-                   {P_REV_ON, 1}, {P_REV_MIX, 12}, {P_REV_DECAY, 50}, {P_SPREAD, 60}},
+                   {P_REV_ON, 1}, {P_REV_MIX, 2}, {P_REV_DECAY, 34}, {P_SPREAD, 60}},
         {WHEEL_VIB, {MS_PRESSURE, 30, MD_FM_LEVEL}});
     add("Dark Wurli", {{P_O1_SHAPE, 20}, {P_O2_SHAPE, SQR}, {P_O2_LEVEL, 40}, {P_SUB, 30}, {P_CUTOFF, 420}, {P_RESO, 26},
                        {P_DRIVE, 127}, {P_KEYAMT, 80}, {P_E1_DEC, 66}, {P_E1_SUS, 10}, {P_E1_REL, 56}, {P_E1_AMT, 52},
@@ -118,22 +118,22 @@ std::vector<Def> defs()
                       {P_KEYAMT, 60}, {P_E1_DEC, 68}, {P_E1_SUS, 30}, {P_E1_REL, 60}, {P_E1_AMT, 40}, {P_E1_VEL, 1},
                       {P_E2_DEC, 78}, {P_E2_SUS, 90}, {P_E2_REL, 64}, {P_LFO1 + LFO_FREQ, 50}, {P_LFO1 + LFO_AMT, 18},
                       {P_LFO1 + LFO_DEST, MD_OSC1_SHAPE}, {P_FX_ON, 1}, {P_FX_TYPE, FX_CHORUS}, {P_FX_TIME, 30},
-                      {P_FX_MIX, 100}, {P_FX_MISC, 100}, {P_REV_ON, 1}, {P_REV_MIX, 12}, {P_REV_DECAY, 48},
+                      {P_FX_MIX, 100}, {P_FX_MISC, 100}, {P_REV_ON, 1}, {P_REV_MIX, 2}, {P_REV_DECAY, 33},
                       {P_VINTAGE, 28}, {P_SPREAD, 80}});
     add("Velvet Poly", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SAWSQ}, {P_O2_PITCH, -11}, {P_SUB, 30}, {P_CUTOFF, 470}, {P_RESO, 20},
                         {P_DRIVE, 84}, {P_KEYAMT, 64}, {P_E1_ATT, 20}, {P_E1_DEC, 78}, {P_E1_SUS, 50}, {P_E1_REL, 74},
                         {P_E1_AMT, 44}, {P_E1_VEL, 1}, {P_E2_ATT, 14}, {P_E2_DEC, 80}, {P_E2_SUS, 110}, {P_E2_REL, 78},
                         {P_FX_ON, 1}, {P_FX_TYPE, FX_BBD}, {P_FX_TIME, 50}, {P_FX_MIX, 24}, {P_FX_MISC, 34},
-                        {P_REV_ON, 1}, {P_REV_MIX, 18}, {P_REV_DECAY, 62}, {P_VINTAGE, 70}, {P_SPREAD, 90}});
+                        {P_REV_ON, 1}, {P_REV_MIX, 4}, {P_REV_DECAY, 44}, {P_VINTAGE, 70}, {P_SPREAD, 90}});
     add("Tape Piano", {{P_O1_SHAPE, 30}, {P_O2_SHAPE, SINE}, {P_O2_OCT, 1}, {P_O2_PITCH, 3}, {P_O2_LEVEL, 70}, {P_CUTOFF, 520},
                        {P_DRIVE, 50}, {P_KEYAMT, 100}, {P_E1_DEC, 72}, {P_E1_SUS, 0}, {P_E1_REL, 62}, {P_E1_AMT, 56},
                        {P_E1_VEL, 1}, {P_E2_DEC, 94}, {P_E2_SUS, 0}, {P_E2_REL, 66}, {P_E2_VEL, 1}, {P_FX_ON, 1},
                        {P_FX_TYPE, FX_LOFI}, {P_FX_TIME, 60}, {P_FX_MIX, 70}, {P_FX_MISC, 30}, {P_REV_ON, 1},
-                       {P_REV_MIX, 14}, {P_REV_DECAY, 54}, {P_VINTAGE, 50}, {P_SPREAD, 50}});
+                       {P_REV_MIX, 3}, {P_REV_DECAY, 38}, {P_VINTAGE, 50}, {P_SPREAD, 50}});
     add("Drawbars", {{P_O1_SHAPE, SINE}, {P_O2_SHAPE, SINE}, {P_O2_OCT, 1}, {P_O2_PITCH, 700}, {P_O2_LEVEL, 80}, {P_SUB, 100},
                      {P_CUTOFF, 900}, {P_DRIVE, 100}, {P_E2_ATT, 0}, {P_E2_DEC, 0}, {P_E2_SUS, 127}, {P_E2_REL, 30},
                      {P_E1_AMT, 0}, {P_OVERDRIVE, 44}, {P_FX_ON, 1}, {P_FX_TYPE, FX_ROTARY}, {P_FX_TIME, 30},
-                     {P_FX_MIX, 60}, {P_FX_MISC, 60}, {P_REV_ON, 1}, {P_REV_MIX, 10}, {P_REV_DECAY, 44}},
+                     {P_FX_MIX, 60}, {P_FX_MISC, 60}, {P_REV_ON, 1}, {P_REV_MIX, 2}, {P_REV_DECAY, 29}},
         {{MS_MODWHEEL, 90, MD_FX_TIME}, {MS_PRESSURE, 40, MD_OVERDRIVE}});
     add("Gnarly Organ", {{P_O1_SHAPE, SQR}, {P_O2_SHAPE, SQR}, {P_O2_OCT, 1}, {P_O2_LEVEL, 90}, {P_SUB, 110}, {P_CUTOFF, 700},
                          {P_RESO, 20}, {P_DRIVE, 127}, {P_E2_SUS, 127}, {P_E2_REL, 34}, {P_E1_AMT, 10}, {P_E1_DEC, 60},
@@ -144,14 +144,14 @@ std::vector<Def> defs()
                        {P_KEYAMT, 100}, {P_ENV_ROUTING, ER_AUX_FILTERAMP}, {P_E1_DEST, MD_FM_LEVEL}, {P_E1_AMT, 50},
                        {P_E1_VEL, 1}, {P_E1_DEC, 70}, {P_E1_SUS, 0}, {P_E2_AMT, 30}, {P_E2_DEC, 98}, {P_E2_SUS, 0},
                        {P_E2_REL, 84}, {P_E2_VEL, 1}, {P_FX_ON, 1}, {P_FX_TYPE, FX_DELAY}, {P_FX_SYNC, 1}, {P_FX_TIME, 76},
-                       {P_FX_MIX, 26}, {P_FX_MISC, 50}, {P_REV_ON, 1}, {P_REV_MIX, 24}, {P_REV_DECAY, 76},
+                       {P_FX_MIX, 26}, {P_FX_MISC, 50}, {P_REV_ON, 1}, {P_REV_MIX, 6}, {P_REV_DECAY, 56},
                        {P_VINTAGE, 20}, {P_SPREAD, 110}});
     add("Stab Machine", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SAW}, {P_O2_PITCH, 12}, {P_CUTOFF, 360}, {P_RESO, 52}, {P_DRIVE, 127},
                          {P_KEYAMT, 60}, {P_E1_DEC, 60}, {P_E1_SUS, 0}, {P_E1_REL, 50}, {P_E1_AMT, 80}, {P_E1_VEL, 1},
                          {P_E2_DEC, 64}, {P_E2_SUS, 0}, {P_E2_REL, 54}, {P_UNISON, 1}, {P_UNI_VOICES, 5},
                          {P_UNI_DETUNE, 3}, {P_OVERDRIVE, 34}, {P_FX_ON, 1}, {P_FX_TYPE, FX_DELAY}, {P_FX_SYNC, 1},
-                         {P_FX_TIME, 76}, {P_FX_MIX, 26}, {P_FX_MISC, 40}, {P_REV_ON, 1}, {P_REV_MIX, 14},
-                         {P_REV_DECAY, 50}},
+                         {P_FX_TIME, 76}, {P_FX_MIX, 26}, {P_FX_MISC, 40}, {P_REV_ON, 1}, {P_REV_MIX, 3},
+                         {P_REV_DECAY, 34}},
         {WHEEL_VIB, AT_CUT}, {}, {0, 3, 7, 10});
     add("Soft Pluck", {{P_O1_SHAPE, 34}, {P_O2_SHAPE, SQR}, {P_O2_LEVEL, 50}, {P_O2_PITCH, 5}, {P_CUTOFF, 400}, {P_RESO, 30},
                        {P_DRIVE, 60}, {P_KEYAMT, 80}, {P_E1_DEC, 64}, {P_E1_SUS, 0}, {P_E1_REL, 60}, {P_E1_AMT, 60},
@@ -161,12 +161,12 @@ std::vector<Def> defs()
                        {P_DRIVE, 112}, {P_KEYAMT, 50}, {P_E1_ATT, 10}, {P_E1_DEC, 76}, {P_E1_SUS, 60}, {P_E1_REL, 70},
                        {P_E1_AMT, 30}, {P_E1_VEL, 1}, {P_E2_ATT, 6}, {P_E2_SUS, 120}, {P_E2_REL, 72}, {P_UNISON, 0},
                        {P_FX_ON, 1}, {P_FX_TYPE, FX_CHORUS}, {P_FX_TIME, 20}, {P_FX_MIX, 70}, {P_FX_MISC, 60},
-                       {P_REV_ON, 1}, {P_REV_MIX, 12}, {P_REV_DECAY, 52}, {P_VINTAGE, 60}, {P_SPREAD, 100}});
+                       {P_REV_ON, 1}, {P_REV_MIX, 2}, {P_REV_DECAY, 36}, {P_VINTAGE, 60}, {P_SPREAD, 100}});
     add("Broken Toy", {{P_O1_SHAPE, SQR}, {P_O1_OCT, 1}, {P_O2_SHAPE, SINE}, {P_O2_OCT, 2}, {P_O2_PITCH, 13}, {P_O2_LEVEL, 70},
                        {P_FM, 1}, {P_CUTOFF, 640}, {P_DRIVE, 80}, {P_KEYAMT, 90}, {P_E1_DEC, 58}, {P_E1_SUS, 0},
                        {P_E1_AMT, 50}, {P_E1_VEL, 1}, {P_E2_DEC, 70}, {P_E2_SUS, 0}, {P_E2_REL, 60}, {P_FX_ON, 1},
                        {P_FX_TYPE, FX_LOFI}, {P_FX_TIME, 90}, {P_FX_MIX, 90}, {P_FX_MISC, 50}, {P_VINTAGE, 100},
-                       {P_REV_ON, 1}, {P_REV_MIX, 14}, {P_REV_DECAY, 50}});
+                       {P_REV_ON, 1}, {P_REV_MIX, 3}, {P_REV_DECAY, 34}});
 
     /* ===================================================== BANK 2: basses and leads === */
     add("Fat Five Bass", {{P_O1_OCT, -2}, {P_O2_OCT, -2}, {P_O1_SHAPE, SAW}, {P_O2_SHAPE, SQR}, {P_O2_PITCH, 6}, {P_SUB, 110},
@@ -201,7 +201,7 @@ std::vector<Def> defs()
                           {P_E2_SUS, 120}, {P_E2_REL, 50}, {P_UNISON, 1}, {P_UNI_VOICES, 3}, {P_UNI_DETUNE, 2},
                           {P_GLIDE, 1}, {P_GLIDE_RATE, 34}, {P_OVERDRIVE, 30}, {P_FX_ON, 1}, {P_FX_TYPE, FX_BBD},
                           {P_FX_SYNC, 1}, {P_FX_TIME, 64}, {P_FX_MIX, 24}, {P_FX_MISC, 40}, {P_REV_ON, 1},
-                          {P_REV_MIX, 12}, {P_REV_DECAY, 50}, {P_VINTAGE, 40}});
+                          {P_REV_MIX, 2}, {P_REV_DECAY, 34}, {P_VINTAGE, 40}});
     add("Square Lead", {{P_O1_SHAPE, SQR}, {P_O2_SHAPE, PUL}, {P_O2_PITCH, 8}, {P_CUTOFF, 640}, {P_RESO, 20}, {P_DRIVE, 90},
                         {P_KEYAMT, 60}, {P_E1_DEC, 70}, {P_E1_SUS, 60}, {P_E1_AMT, 30}, {P_E2_SUS, 120}, {P_E2_REL, 50},
                         {P_LFO1 + LFO_FREQ, 64}, {P_UNISON, 1}, {P_UNI_VOICES, 2}, {P_UNI_DETUNE, 1}, {P_GLIDE, 1},
@@ -218,7 +218,7 @@ std::vector<Def> defs()
                          {P_E2_ATT, 30}, {P_E2_SUS, 127}, {P_E2_REL, 56}, {P_E1_AMT, 0}, {P_LFO1 + LFO_FREQ, 68},
                          {P_LFO1 + LFO_AMT, 6}, {P_GLIDE, 1}, {P_GLIDE_RATE, 40}, {P_UNISON, 1}, {P_UNI_VOICES, 1},
                          {P_FX_ON, 1}, {P_FX_TYPE, FX_DELAY}, {P_FX_SYNC, 1}, {P_FX_TIME, 76}, {P_FX_MIX, 30},
-                         {P_FX_MISC, 56}, {P_REV_ON, 1}, {P_REV_MIX, 22}, {P_REV_DECAY, 70}});
+                         {P_FX_MISC, 56}, {P_REV_ON, 1}, {P_REV_MIX, 5}, {P_REV_DECAY, 51}});
     add("Reso Bass", {{P_O1_OCT, -2}, {P_O1_SHAPE, SAW}, {P_O2_OCT, -1}, {P_O2_SHAPE, SQR}, {P_O2_LEVEL, 70}, {P_CUTOFF, 200},
                       {P_RESO, 80}, {P_DRIVE, 127}, {P_KEYAMT, 60}, {P_E1_DEC, 66}, {P_E1_SUS, 10}, {P_E1_AMT, 80},
                       {P_E1_VEL, 1}, {P_E2_SUS, 120}, {P_E2_REL, 30}, {P_OVERDRIVE, 20}, {P_VINTAGE, 30}});
@@ -233,7 +233,7 @@ std::vector<Def> defs()
                         {P_E1_SUS, 60}, {P_E1_AMT, 36}, {P_E2_SUS, 120}, {P_E2_REL, 54}, {P_UNISON, 1},
                         {P_UNI_VOICES, 2}, {P_UNI_DETUNE, 3}, {P_GLIDE, 1}, {P_GLIDE_RATE, 30}, {P_FX_ON, 1},
                         {P_FX_TYPE, FX_CHORUS}, {P_FX_TIME, 30}, {P_FX_MIX, 60}, {P_FX_MISC, 50}, {P_REV_ON, 1},
-                        {P_REV_MIX, 14}, {P_REV_DECAY, 56}, {P_VINTAGE, 40}});
+                        {P_REV_MIX, 3}, {P_REV_DECAY, 39}, {P_VINTAGE, 40}});
     add("Mono Tom Bass", {{P_O1_OCT, -1}, {P_O1_SHAPE, SINE}, {P_O2_LEVEL, 0}, {P_SUB, 60}, {P_NOISE, 16}, {P_CUTOFF, 340},
                           {P_DRIVE, 127}, {P_ENV_ROUTING, ER_AUX_FILTERAMP}, {P_E1_DEST, MD_OSC1_FINE}, {P_E1_AMT, 50},
                           {P_E1_DEC, 50}, {P_E1_SUS, 0}, {P_E2_AMT, 60}, {P_E2_DEC, 70}, {P_E2_SUS, 0}, {P_E2_REL, 60},
@@ -258,79 +258,79 @@ std::vector<Def> defs()
     add("Warm Strings", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SAW}, {P_O2_PITCH, 8}, {P_CUTOFF, 560}, {P_RESO, 8}, {P_DRIVE, 60},
                          {P_KEYAMT, 60}, {P_E1_ATT, 70}, {P_E1_DEC, 80}, {P_E1_SUS, 80}, {P_E1_REL, 80}, {P_E1_AMT, 24},
                          {P_E2_ATT, 66}, {P_E2_SUS, 120}, {P_E2_REL, 82}, {P_FX_ON, 1}, {P_FX_TYPE, FX_CHORUS},
-                         {P_FX_TIME, 24}, {P_FX_MIX, 100}, {P_FX_MISC, 90}, {P_REV_ON, 1}, {P_REV_MIX, 20},
-                         {P_REV_DECAY, 66}, {P_VINTAGE, 50}, {P_SPREAD, 110}});
+                         {P_FX_TIME, 24}, {P_FX_MIX, 100}, {P_FX_MISC, 90}, {P_REV_ON, 1}, {P_REV_MIX, 5},
+                         {P_REV_DECAY, 48}, {P_VINTAGE, 50}, {P_SPREAD, 110}});
     add("Slow Brass", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SAW}, {P_O2_PITCH, 9}, {P_O1_OCT, -1}, {P_CUTOFF, 360}, {P_RESO, 16},
                        {P_DRIVE, 110}, {P_E1_ATT, 72}, {P_E1_DEC, 80}, {P_E1_SUS, 70}, {P_E1_REL, 72}, {P_E1_AMT, 70},
-                       {P_E2_ATT, 64}, {P_E2_SUS, 120}, {P_E2_REL, 74}, {P_REV_ON, 1}, {P_REV_MIX, 16},
-                       {P_REV_DECAY, 60}, {P_VINTAGE, 60}, {P_SPREAD, 80}});
+                       {P_E2_ATT, 64}, {P_E2_SUS, 120}, {P_E2_REL, 74}, {P_REV_ON, 1}, {P_REV_MIX, 3},
+                       {P_REV_DECAY, 43}, {P_VINTAGE, 60}, {P_SPREAD, 80}});
     add("Vapor Pad", {{P_O1_SHAPE, 60}, {P_O2_SHAPE, PUL}, {P_O2_PITCH, -10}, {P_SUB, 40}, {P_CUTOFF, 460}, {P_RESO, 30},
                       {P_DRIVE, 70}, {P_E1_ATT, 82}, {P_E1_DEC, 90}, {P_E1_SUS, 60}, {P_E1_REL, 86}, {P_E1_AMT, 40},
                       {P_E2_ATT, 80}, {P_E2_SUS, 120}, {P_E2_REL, 88}, {P_LFO1 + LFO_FREQ, 20},
                       {P_LFO1 + LFO_AMT, 20}, {P_LFO1 + LFO_DEST, MD_OSC_SHAPE}, {P_FX_ON, 1}, {P_FX_TYPE, FX_TAPE2},
-                      {P_FX_TIME, 90}, {P_FX_MIX, 40}, {P_FX_MISC, 60}, {P_REV_ON, 1}, {P_REV_MIX, 34},
-                      {P_REV_DECAY, 86}, {P_VINTAGE, 80}, {P_SPREAD, 127}});
+                      {P_FX_TIME, 90}, {P_FX_MIX, 40}, {P_FX_MISC, 60}, {P_REV_ON, 1}, {P_REV_MIX, 11},
+                      {P_REV_DECAY, 65}, {P_VINTAGE, 80}, {P_SPREAD, 127}});
     add("Sweep Pad", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SAW}, {P_O2_PITCH, 12}, {P_CUTOFF, 200}, {P_RESO, 70}, {P_DRIVE, 80},
                       {P_E1_ATT, 96}, {P_E1_DEC, 100}, {P_E1_SUS, 30}, {P_E1_REL, 90}, {P_E1_AMT, 80}, {P_E2_ATT, 70},
                       {P_E2_SUS, 120}, {P_E2_REL, 86}, {P_FX_ON, 1}, {P_FX_TYPE, FX_PHASER}, {P_FX_TIME, 10},
-                      {P_FX_MIX, 60}, {P_FX_MISC, 60}, {P_REV_ON, 1}, {P_REV_MIX, 24}, {P_REV_DECAY, 74},
+                      {P_FX_MIX, 60}, {P_FX_MISC, 60}, {P_REV_ON, 1}, {P_REV_MIX, 6}, {P_REV_DECAY, 55},
                       {P_VINTAGE, 50}, {P_SPREAD, 110}});
     add("Choir Ahh", {{P_O1_SHAPE, PUL}, {P_O2_SHAPE, 74}, {P_O2_PITCH, 6}, {P_NOISE, -12}, {P_CUTOFF, 430}, {P_RESO, 50},
                       {P_DRIVE, 40}, {P_KEYAMT, 60}, {P_E1_ATT, 70}, {P_E1_SUS, 90}, {P_E1_REL, 80}, {P_E1_AMT, 14},
                       {P_E2_ATT, 70}, {P_E2_SUS, 120}, {P_E2_REL, 84}, {P_LFO1 + LFO_FREQ, 54}, {P_LFO1 + LFO_AMT, 8},
                       {P_LFO1 + LFO_N + LFO_FREQ, 24}, {P_LFO1 + LFO_N + LFO_AMT, 10}, {P_LFO1 + LFO_N + LFO_DEST, MD_CUTOFF}, {P_FX_ON, 1}, {P_FX_TYPE, FX_CHORUS}, {P_FX_TIME, 26},
-                      {P_FX_MIX, 110}, {P_FX_MISC, 90}, {P_REV_ON, 1}, {P_REV_MIX, 30}, {P_REV_DECAY, 78},
+                      {P_FX_MIX, 110}, {P_FX_MISC, 90}, {P_REV_ON, 1}, {P_REV_MIX, 9}, {P_REV_DECAY, 58},
                       {P_VINTAGE, 40}, {P_SPREAD, 110}});
     add("Dust Pad", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SINE}, {P_O2_OCT, 1}, {P_O2_LEVEL, 60}, {P_NOISE, -40}, {P_CUTOFF, 380},
                      {P_RESO, 40}, {P_DRIVE, 90}, {P_E1_ATT, 84}, {P_E1_SUS, 60}, {P_E1_REL, 86}, {P_E1_AMT, 30},
                      {P_E2_ATT, 84}, {P_E2_SUS, 120}, {P_E2_REL, 90}, {P_FX_ON, 1}, {P_FX_TYPE, FX_LOFI},
-                     {P_FX_TIME, 70}, {P_FX_MIX, 80}, {P_FX_MISC, 40}, {P_REV_ON, 1}, {P_REV_MIX, 30},
-                     {P_REV_DECAY, 84}, {P_VINTAGE, 100}, {P_SPREAD, 127}});
+                     {P_FX_TIME, 70}, {P_FX_MIX, 80}, {P_FX_MISC, 40}, {P_REV_ON, 1}, {P_REV_MIX, 9},
+                     {P_REV_DECAY, 63}, {P_VINTAGE, 100}, {P_SPREAD, 127}});
     add("Synth Horns", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SAW}, {P_O2_PITCH, -7}, {P_CUTOFF, 420}, {P_RESO, 12}, {P_DRIVE, 120},
                         {P_KEYAMT, 70}, {P_E1_ATT, 44}, {P_E1_DEC, 70}, {P_E1_SUS, 60}, {P_E1_REL, 60}, {P_E1_AMT, 70},
                         {P_E1_VEL, 1}, {P_E2_ATT, 24}, {P_E2_SUS, 120}, {P_E2_REL, 60}, {P_OVERDRIVE, 16},
-                        {P_REV_ON, 1}, {P_REV_MIX, 12}, {P_REV_DECAY, 54}, {P_VINTAGE, 66}, {P_SPREAD, 70}},
+                        {P_REV_ON, 1}, {P_REV_MIX, 2}, {P_REV_DECAY, 38}, {P_VINTAGE, 66}, {P_SPREAD, 70}},
         {WHEEL_VIB, AT_CUT, {MS_VELOCITY, 20, MD_ENV1_AMT}});
     add("Wide Saws", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SAW}, {P_O2_PITCH, 14}, {P_O1_PITCH, -6}, {P_SUB, 40}, {P_CUTOFF, 600},
                       {P_RESO, 10}, {P_DRIVE, 100}, {P_E1_ATT, 40}, {P_E1_SUS, 90}, {P_E1_AMT, 20}, {P_E2_ATT, 40},
                       {P_E2_SUS, 120}, {P_E2_REL, 80}, {P_FX_ON, 1}, {P_FX_TYPE, FX_CHORUS}, {P_FX_TIME, 16},
-                      {P_FX_MIX, 80}, {P_FX_MISC, 70}, {P_REV_ON, 1}, {P_REV_MIX, 18}, {P_REV_DECAY, 64},
+                      {P_FX_MIX, 80}, {P_FX_MISC, 70}, {P_REV_ON, 1}, {P_REV_MIX, 4}, {P_REV_DECAY, 46},
                       {P_VINTAGE, 70}, {P_SPREAD, 127}});
     add("Glacier", {{P_O1_SHAPE, SINE}, {P_O2_SHAPE, SAW}, {P_O2_OCT, 1}, {P_O2_PITCH, 4}, {P_O2_LEVEL, 50}, {P_CUTOFF, 520},
                     {P_RESO, 20}, {P_DRIVE, 50}, {P_E1_ATT, 90}, {P_E1_SUS, 80}, {P_E1_REL, 90}, {P_E1_AMT, 30},
                     {P_E2_ATT, 92}, {P_E2_SUS, 120}, {P_E2_REL, 96}, {P_FX_ON, 1}, {P_FX_TYPE, FX_FLANGER},
-                    {P_FX_TIME, 6}, {P_FX_MIX, 60}, {P_FX_MISC, 70}, {P_REV_ON, 1}, {P_REV_MIX, 40},
-                    {P_REV_DECAY, 92}, {P_REV_TONE, -10}, {P_VINTAGE, 30}, {P_SPREAD, 127}});
+                    {P_FX_TIME, 6}, {P_FX_MIX, 60}, {P_FX_MISC, 70}, {P_REV_ON, 1}, {P_REV_MIX, 13},
+                    {P_REV_DECAY, 70}, {P_REV_TONE, -10}, {P_VINTAGE, 30}, {P_SPREAD, 127}});
     add("Pulse Pad", {{P_O1_SHAPE, PUL}, {P_O2_SHAPE, PUL}, {P_O2_PITCH, 7}, {P_CUTOFF, 520}, {P_RESO, 14}, {P_DRIVE, 70},
                       {P_E1_ATT, 60}, {P_E1_SUS, 90}, {P_E1_AMT, 20}, {P_E2_ATT, 60}, {P_E2_SUS, 120}, {P_E2_REL, 80},
                       {P_LFO1 + LFO_FREQ, 34}, {P_LFO1 + LFO_AMT, 26}, {P_LFO1 + LFO_DEST, MD_OSC_SHAPE},
                       {P_FX_ON, 1}, {P_FX_TYPE, FX_CHORUS}, {P_FX_TIME, 20}, {P_FX_MIX, 70}, {P_FX_MISC, 60},
-                      {P_REV_ON, 1}, {P_REV_MIX, 16}, {P_REV_DECAY, 60}, {P_VINTAGE, 50}, {P_SPREAD, 100}});
+                      {P_REV_ON, 1}, {P_REV_MIX, 3}, {P_REV_DECAY, 43}, {P_VINTAGE, 50}, {P_SPREAD, 100}});
     add("Fifths Pad", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SAWSQ}, {P_O2_PITCH, 702}, {P_O2_LEVEL, 90}, {P_CUTOFF, 440},
                        {P_RESO, 24}, {P_DRIVE, 90}, {P_E1_ATT, 80}, {P_E1_SUS, 60}, {P_E1_REL, 80}, {P_E1_AMT, 40},
                        {P_E2_ATT, 76}, {P_E2_SUS, 120}, {P_E2_REL, 84}, {P_FX_ON, 1}, {P_FX_TYPE, FX_BBD},
-                       {P_FX_TIME, 70}, {P_FX_MIX, 26}, {P_FX_MISC, 50}, {P_REV_ON, 1}, {P_REV_MIX, 22},
-                       {P_REV_DECAY, 72}, {P_VINTAGE, 60}, {P_SPREAD, 110}});
+                       {P_FX_TIME, 70}, {P_FX_MIX, 26}, {P_FX_MISC, 50}, {P_REV_ON, 1}, {P_REV_MIX, 5},
+                       {P_REV_DECAY, 53}, {P_VINTAGE, 60}, {P_SPREAD, 110}});
     add("Analog Chorus", {{P_O1_SHAPE, SAW}, {P_O2_LEVEL, 0}, {P_SUB, 40}, {P_CUTOFF, 620}, {P_RESO, 10}, {P_DRIVE, 64},
                           {P_E1_ATT, 30}, {P_E1_SUS, 80}, {P_E1_AMT, 20}, {P_E2_ATT, 30}, {P_E2_SUS, 120}, {P_E2_REL, 74},
                           {P_FX_ON, 1}, {P_FX_TYPE, FX_CHORUS}, {P_FX_TIME, 40}, {P_FX_MIX, 127}, {P_FX_MISC, 100},
-                          {P_REV_ON, 1}, {P_REV_MIX, 12}, {P_REV_DECAY, 52}, {P_VINTAGE, 40}, {P_SPREAD, 90}});
+                          {P_REV_ON, 1}, {P_REV_MIX, 2}, {P_REV_DECAY, 36}, {P_VINTAGE, 40}, {P_SPREAD, 90}});
     add("Breathing", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SQR}, {P_O2_PITCH, 5}, {P_NOISE, 20}, {P_CUTOFF, 300}, {P_RESO, 50},
                       {P_DRIVE, 80}, {P_E1_ATT, 80}, {P_E1_DEC, 90}, {P_E1_SUS, 30}, {P_E1_REL, 84}, {P_E1_AMT, 60},
                       {P_E2_ATT, 70}, {P_E2_SUS, 120}, {P_E2_REL, 86}, {P_ENV_REPEAT, RP_ENV1},
                       {P_FX_ON, 1}, {P_FX_TYPE, FX_PHASER}, {P_FX_TIME, 16}, {P_FX_MIX, 60}, {P_FX_MISC, 50},
-                      {P_REV_ON, 1}, {P_REV_MIX, 22}, {P_REV_DECAY, 72}, {P_VINTAGE, 60}, {P_SPREAD, 110}});
+                      {P_REV_ON, 1}, {P_REV_MIX, 5}, {P_REV_DECAY, 53}, {P_VINTAGE, 60}, {P_SPREAD, 110}});
     add("Big Unison", {{P_O1_SHAPE, SAW}, {P_O2_SHAPE, SAW}, {P_O2_PITCH, 5}, {P_O2_OCT, -1}, {P_SUB, 60}, {P_CUTOFF, 520},
                        {P_RESO, 20}, {P_DRIVE, 127}, {P_E1_ATT, 30}, {P_E1_DEC, 80}, {P_E1_SUS, 60}, {P_E1_AMT, 40},
                        {P_E2_ATT, 20}, {P_E2_SUS, 120}, {P_E2_REL, 70}, {P_UNISON, 1}, {P_UNI_VOICES, 5},
-                       {P_UNI_DETUNE, 4}, {P_OVERDRIVE, 20}, {P_REV_ON, 1}, {P_REV_MIX, 14}, {P_REV_DECAY, 60},
+                       {P_UNI_DETUNE, 4}, {P_OVERDRIVE, 20}, {P_REV_ON, 1}, {P_REV_MIX, 3}, {P_REV_DECAY, 43},
                        {P_VINTAGE, 50}, {P_SPREAD, 127}},
         {WHEEL_VIB, AT_CUT}, {}, {0, 7, 12});
     add("Haunted Air", {{P_O1_SHAPE, SINE}, {P_O2_SHAPE, SINE}, {P_O2_OCT, 1}, {P_O2_PITCH, 10}, {P_NOISE, -60},
                         {P_CUTOFF, 500}, {P_RESO, 90}, {P_DRIVE, 40}, {P_E1_ATT, 96}, {P_E1_SUS, 80}, {P_E1_REL, 96},
                         {P_E1_AMT, 20}, {P_E2_ATT, 96}, {P_E2_SUS, 120}, {P_E2_REL, 98}, {P_LFO1 + LFO_N + LFO_FREQ, 24}, {P_LFO1 + LFO_N + LFO_AMT, 10}, {P_LFO1 + LFO_N + LFO_DEST, MD_CUTOFF},
                         {P_FX_ON, 1}, {P_FX_TYPE, FX_TAPE2}, {P_FX_TIME, 100}, {P_FX_MIX, 36}, {P_FX_MISC, 70},
-                        {P_REV_ON, 1}, {P_REV_MIX, 44}, {P_REV_DECAY, 96}, {P_VINTAGE, 90}, {P_SPREAD, 127}});
+                        {P_REV_ON, 1}, {P_REV_MIX, 16}, {P_REV_DECAY, 74}, {P_VINTAGE, 90}, {P_SPREAD, 127}});
 
     /* ===================================================== BANK 4: FM, bells, percussion, motion === */
     add("FM Bells", {{P_O1_SHAPE, SINE}, {P_O2_SHAPE, SINE}, {P_O2_OCT, 1}, {P_O2_PITCH, 386}, {P_O2_LEVEL, 70}, {P_FM, 1},
@@ -338,38 +338,38 @@ std::vector<Def> defs()
                      {P_E1_AMT, 40}, {P_E1_VEL, 1}, {P_E1_DEC, 84}, {P_E1_SUS, 0}, {P_E2_AMT, 0}, {P_E2_DEC, 100},
                      {P_E2_SUS, 0}, {P_E2_REL, 90}, {P_E2_VEL, 1}, {P_FX_ON, 1}, {P_FX_TYPE, FX_DELAY},
                      {P_FX_SYNC, 1}, {P_FX_TIME, 76}, {P_FX_MIX, 20}, {P_FX_MISC, 40}, {P_REV_ON, 1},
-                     {P_REV_MIX, 24}, {P_REV_DECAY, 80}, {P_SPREAD, 110}});
+                     {P_REV_MIX, 6}, {P_REV_DECAY, 60}, {P_SPREAD, 110}});
     add("Metal Mallet", {{P_O1_SHAPE, SINE}, {P_O2_SHAPE, SQR}, {P_O2_OCT, 2}, {P_O2_PITCH, 250}, {P_O2_LEVEL, 80}, {P_FM, 1},
                          {P_CUTOFF, 700}, {P_KEYAMT, 100}, {P_ENV_ROUTING, ER_AUX_FILTERAMP}, {P_E1_DEST, MD_FM_LEVEL},
                          {P_E1_AMT, 70}, {P_E1_VEL, 1}, {P_E1_DEC, 54}, {P_E1_SUS, 0}, {P_E2_AMT, 20}, {P_E2_DEC, 80},
                          {P_E2_SUS, 0}, {P_E2_REL, 74}, {P_E2_VEL, 1}, {P_FX_ON, 1}, {P_FX_TYPE, FX_BBD},
                          {P_FX_SYNC, 1}, {P_FX_TIME, 64}, {P_FX_MIX, 20}, {P_FX_MISC, 30}, {P_VINTAGE, 30},
-                         {P_REV_ON, 1}, {P_REV_MIX, 16}, {P_REV_DECAY, 60}, {P_SPREAD, 100}});
+                         {P_REV_ON, 1}, {P_REV_MIX, 3}, {P_REV_DECAY, 43}, {P_SPREAD, 100}});
     add("Marimba", {{P_O1_SHAPE, SINE}, {P_O2_SHAPE, SINE}, {P_O2_OCT, 2}, {P_O2_LEVEL, 40}, {P_FM, 1}, {P_CUTOFF, 540},
                     {P_KEYAMT, 100}, {P_E1_AMT, 50}, {P_E1_VEL, 1}, {P_E1_DEC, 54}, {P_E1_SUS, 0}, {P_E2_DEC, 68},
-                    {P_E2_SUS, 0}, {P_E2_REL, 64}, {P_E2_VEL, 1}, {P_REV_ON, 1}, {P_REV_MIX, 14}, {P_REV_DECAY, 50},
+                    {P_E2_SUS, 0}, {P_E2_REL, 64}, {P_E2_VEL, 1}, {P_REV_ON, 1}, {P_REV_MIX, 3}, {P_REV_DECAY, 34},
                     {P_VINTAGE, 20}, {P_SPREAD, 90}},
         {{MS_MODWHEEL, 40, MD_FM_LEVEL}, AT_CUT});
     add("Kalimba", {{P_O1_SHAPE, SINE}, {P_O2_SHAPE, SINE}, {P_O2_OCT, 2}, {P_O2_PITCH, 300}, {P_O2_LEVEL, 30}, {P_FM, 1},
                     {P_CUTOFF, 640}, {P_KEYAMT, 100}, {P_E1_AMT, 40}, {P_E1_VEL, 1}, {P_E1_DEC, 50}, {P_E1_SUS, 0},
                     {P_E2_DEC, 74}, {P_E2_SUS, 0}, {P_E2_REL, 70}, {P_E2_VEL, 1}, {P_FX_ON, 1}, {P_FX_TYPE, FX_DELAY},
                     {P_FX_SYNC, 1}, {P_FX_TIME, 70}, {P_FX_MIX, 22}, {P_FX_MISC, 40}, {P_REV_ON, 1},
-                    {P_REV_MIX, 14}, {P_REV_DECAY, 56}, {P_VINTAGE, 26}, {P_SPREAD, 100}});
+                    {P_REV_MIX, 3}, {P_REV_DECAY, 39}, {P_VINTAGE, 26}, {P_SPREAD, 100}});
     add("Ring Bell", {{P_O1_SHAPE, SQR}, {P_O2_SHAPE, SINE}, {P_O2_OCT, 1}, {P_O2_PITCH, 530}, {P_CUTOFF, 700},
                       {P_E1_AMT, 30}, {P_E1_DEC, 70}, {P_E1_SUS, 0}, {P_E2_DEC, 90}, {P_E2_SUS, 0}, {P_E2_REL, 84},
                       {P_FX_ON, 1}, {P_FX_TYPE, FX_RINGMOD}, {P_FX_TIME, 70}, {P_FX_MIX, 60}, {P_FX_MISC, 60},
-                      {P_REV_ON, 1}, {P_REV_MIX, 20}, {P_REV_DECAY, 70}, {P_SPREAD, 100}});
+                      {P_REV_ON, 1}, {P_REV_MIX, 5}, {P_REV_DECAY, 51}, {P_SPREAD, 100}});
     add("Synth Kick", {{P_O1_OCT, -2}, {P_O1_SHAPE, SINE}, {P_O2_LEVEL, 0}, {P_CUTOFF, 400}, {P_DRIVE, 127},
                        {P_ENV_ROUTING, ER_AUX_FILTERAMP}, {P_E1_DEST, MD_OSC1_OCT}, {P_E1_AMT, 70}, {P_E1_DEC, 46},
                        {P_E1_SUS, 0}, {P_E2_AMT, 40}, {P_E2_DEC, 68}, {P_E2_SUS, 0}, {P_E2_REL, 60}, {P_E2_VEL, 1},
                        {P_OVERDRIVE, 70}, {P_UNISON, 1}, {P_UNI_VOICES, 1}});
     add("Noise Snare", {{P_O1_SHAPE, SINE}, {P_O2_LEVEL, 0}, {P_NOISE, 120}, {P_CUTOFF, 760}, {P_RESO, 30}, {P_DRIVE, 100},
                         {P_E1_AMT, 40}, {P_E1_DEC, 50}, {P_E1_SUS, 0}, {P_E2_DEC, 60}, {P_E2_SUS, 0}, {P_E2_REL, 56},
-                        {P_E2_VEL, 1}, {P_OVERDRIVE, 40}, {P_REV_ON, 1}, {P_REV_MIX, 18}, {P_REV_DECAY, 40}});
+                        {P_E2_VEL, 1}, {P_OVERDRIVE, 40}, {P_REV_ON, 1}, {P_REV_MIX, 4}, {P_REV_DECAY, 26}});
     add("Synth Toms", {{P_O1_SHAPE, SINE}, {P_O2_SHAPE, SINE}, {P_O2_PITCH, 30}, {P_NOISE, 14}, {P_CUTOFF, 500}, {P_DRIVE, 110},
                        {P_ENV_ROUTING, ER_AUX_FILTERAMP}, {P_E1_DEST, MD_OSC_FINE}, {P_E1_AMT, 50}, {P_E1_DEC, 60},
                        {P_E1_SUS, 0}, {P_E2_AMT, 40}, {P_E2_DEC, 70}, {P_E2_SUS, 0}, {P_E2_REL, 64}, {P_E2_VEL, 1},
-                       {P_REV_ON, 1}, {P_REV_MIX, 16}, {P_REV_DECAY, 50}, {P_SPREAD, 100}});
+                       {P_REV_ON, 1}, {P_REV_MIX, 3}, {P_REV_DECAY, 34}, {P_SPREAD, 100}});
     add("Hat Machine", {{P_O1_SHAPE, SQR}, {P_O1_OCT, 2}, {P_O2_OCT, 2}, {P_O2_PITCH, 421}, {P_O2_SHAPE, SQR}, {P_NOISE, 90},
                         {P_CUTOFF, 1000}, {P_RESO, 20}, {P_E2_DEC, 46}, {P_E2_SUS, 0}, {P_E2_REL, 44}, {P_E2_VEL, 1},
                         {P_E1_AMT, 0}, {P_FX_ON, 1}, {P_FX_TYPE, FX_HPF}, {P_FX_TIME, 100}, {P_FX_MIX, 127},
@@ -402,15 +402,15 @@ std::vector<Def> defs()
                         {P_E1_AMT, 0}, {P_E2_ATT, 80}, {P_E2_SUS, 120}, {P_E2_REL, 90}, {P_LFO1 + LFO_FREQ, 14},
                         {P_LFO1 + LFO_AMT, 60}, {P_LFO1 + LFO_DEST, MD_CUTOFF}, {P_LFO1 + LFO_SHAPE, LS_SH},
                         {P_LFO1 + LFO_SLEW, 90}, {P_FX_ON, 1}, {P_FX_TYPE, FX_PHASER}, {P_FX_TIME, 8},
-                        {P_FX_MIX, 80}, {P_FX_MISC, 60}, {P_REV_ON, 1}, {P_REV_MIX, 30}, {P_REV_DECAY, 80},
+                        {P_FX_MIX, 80}, {P_FX_MISC, 60}, {P_REV_ON, 1}, {P_REV_MIX, 9}, {P_REV_DECAY, 60},
                         {P_SPREAD, 127}},
         {{MS_MODWHEEL, 80, MD_LFO1_FREQ}, AT_CUT});
     add("Random Bloops", {{P_O1_SHAPE, SINE}, {P_O2_SHAPE, SQR}, {P_O2_OCT, 1}, {P_O2_LEVEL, 50}, {P_FM, 1}, {P_CUTOFF, 520},
                           {P_RESO, 70}, {P_DRIVE, 80}, {P_E1_DEC, 56}, {P_E1_SUS, 0}, {P_E1_AMT, 50}, {P_E2_DEC, 60},
                           {P_E2_SUS, 0}, {P_E2_REL, 60}, {P_ARP_ON, 1}, {P_ARP_MODE, AM_RANDOM}, {P_ARP_OCT, 3},
                           {P_DIVIDE, DV_16}, {P_BPM, 110}, {P_FX_ON, 1}, {P_FX_TYPE, FX_DELAY}, {P_FX_SYNC, 1},
-                          {P_FX_TIME, 76}, {P_FX_MIX, 30}, {P_FX_MISC, 60}, {P_REV_ON, 1}, {P_REV_MIX, 16},
-                          {P_REV_DECAY, 60}, {P_SPREAD, 127}},
+                          {P_FX_TIME, 76}, {P_FX_MIX, 30}, {P_FX_MISC, 60}, {P_REV_ON, 1}, {P_REV_MIX, 3},
+                          {P_REV_DECAY, 43}, {P_SPREAD, 127}},
         {{MS_RANDOM, 40, MD_CUTOFF}, {MS_RANDOM, 30, MD_FM_LEVEL}});
     add("Crushed Lead", {{P_O1_SHAPE, SQR}, {P_O2_SHAPE, SAW}, {P_O2_PITCH, 12}, {P_CUTOFF, 640}, {P_RESO, 40}, {P_DRIVE, 127},
                          {P_E1_DEC, 70}, {P_E1_SUS, 60}, {P_E1_AMT, 30}, {P_E2_SUS, 120}, {P_E2_REL, 50}, {P_UNISON, 1},

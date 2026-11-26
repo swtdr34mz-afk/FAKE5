@@ -670,9 +670,8 @@ public:
             yl = yl + (ol - yl) * tw;
             yr = yr + (orr - yr) * tw;
             tailE = maxf(std::fabs(yl) + std::fabs(yr), tailE * 0.99997f);
-            /* MIX: the wet comes in gently (a little is a little: the low half of the knob a touch of room), the dry
-             * stays until the top half */
-            float dry = std::cos(sMix * sMix * 0.5f * PI), wet = sMix * std::sqrt(sMix) * 0.8f;
+            /* MIX: dry to wet, the power kept */
+            float dry = std::cos(sMix * 0.5f * PI), wet = std::sin(sMix * 0.5f * PI) * 0.85f;
             float wo = maxf(on, 0.0f);
             dry = 1.0f + (dry - 1.0f) * wo;
             L[i] = x0 * dry + yl * wet;
@@ -697,8 +696,8 @@ private:
 
     void coefficients()
     {
-        /* DECAY: 0.3 s to 12 s (the gain at each of a half's two decay points, for that T60) */
-        float t60 = 0.3f * std::exp2(sDecay * 5.3f);
+        /* DECAY: 0.4 s to half a minute (the gain at each of a half's two decay points, for that T60) */
+        float t60 = 0.4f * std::exp2(sDecay * 6.2f);
         g = minf(std::pow(10.0f, -1.5f * loopSec / t60), 0.9992f);
         /* DAMPING: the tank's highs from 16 kHz down to 1.4 kHz */
         kDamp = opK(16000.0f * std::exp2(-sDamp * 3.5f), sr);
