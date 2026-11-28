@@ -36,6 +36,8 @@ Die Plugins laufen auf Apple Silicon und Intel-Macs (eine Datei für beide).
 
 **MPC:** siehe [mpc/plugin/README.md](mpc/plugin/README.md).
 
+**Linux (Bitwig, Reaper, Ardour, ...):** Die `.tar.gz` entpacken. `FAKE5.vst3` nach `~/.vst3/` kopieren, `FAKE5.lv2` nach `~/.lv2/`. Die App `FAKE5` startet auch ohne DAW. 64 Bit, gebaut auf Ubuntu 22.04.
+
 ## What it has
 
 - **5 or 10 voices** (VOICES on the panel).
