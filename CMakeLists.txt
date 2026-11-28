@@ -36,11 +36,15 @@ endif()
 if(APPLE)
     list(APPEND FAKE5_FORMATS AU)
 endif()
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND FAKE5_FORMATS LV2)
+endif()
 
 juce_add_plugin(Fake5
     PRODUCT_NAME "FAKE5"
     COMPANY_NAME "swtdr34mz"
     BUNDLE_ID "com.swtdr34mz.fake5"
+    LV2URI "https://github.com/swtdr34mz-afk/FAKE5"
     PLUGIN_MANUFACTURER_CODE Swtd
     PLUGIN_CODE Fak5
     FORMATS ${FAKE5_FORMATS}
