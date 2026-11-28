@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: MPL-2.0
  * Copyright (C) 2026 swtdr34mz (FAKE5) */
 #include "PluginProcessor.h"
+#include "PanelDialog.h"
 #include "PluginEditor.h"
 #include "SyxImport.h"
 
@@ -169,7 +170,7 @@ void Fake5Processor::setCompare(bool on)
 
 juce::File Fake5Processor::programFolder()
 {
-    return juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getChildFile("FAKE5").getChildFile("Programs");
+    return pdlg::docsOrAppData().getChildFile("FAKE5").getChildFile("Programs");
 }
 
 void Fake5Processor::programToXml(const Program &p, juce::XmlElement &x)
