@@ -85,6 +85,7 @@ class Fake5Editor : public juce::AudioProcessorEditor
 public:
     explicit Fake5Editor(Fake5Processor &);
     void resized() override;
+    bool sized = false;                      /* (resizes during the constructor keep nothing) */
 
 private:
     Fake5Processor &proc;
